@@ -8,12 +8,17 @@ Description: What the package does (one paragraph).
 License: CC BY 4.0
 Imports: 
     clock,
+    curl,
     dplyr,
     fs,
+    purrr,
+    rlang,
     rvest,
     strex,
     stringr,
-    tidyr
+    tibble,
+    tidyr,
+    zip
 Encoding: UTF-8
 Roxygen: list(
     markdown = TRUE,

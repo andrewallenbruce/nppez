@@ -2,8 +2,15 @@
 
 utils::globalVariables(c(
   "full", # <browse>
+  "date1", # <browse>
+  "date2", # <browse>
   "size", # <browse>
   "name", # <browse>
   "type", # <browse>
+  "path", # <peek>
+  "compressed_size", # <peek>
+  "uncompressed_size", # <peek>
+  "zip", # <peek>
+  "path", # <dispense>
   NULL
 ))

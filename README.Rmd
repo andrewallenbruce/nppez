@@ -6,7 +6,7 @@ output: github_document
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse  = FALSE,
+  collapse  = TRUE,
   echo      = TRUE,
   message   = FALSE, 
   warning   = FALSE,
@@ -18,30 +18,507 @@ knitr::opts_chunk$set(
 )
 ```
 
-# `{nppez}`
+# {nppez}
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 ## Installation
 
-You can install the development version of nppez from [GitHub](https://github.com/) with:
+You can install the development version of {nppez} from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("andrewallenbruce/nppez")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
 ```{r}
 library(nppez)
 ```
 
+# Browse
 
-```{r}
+```{r browse, results='asis', eval=FALSE}
 nppez::browse()
 ```
 
+|date       |file                                                 |    size|zip_url                                                                          |
+|:----------|:----------------------------------------------------|-------:|:--------------------------------------------------------------------------------|
+|2023-04-10 |NPPES Data Dissemination                             | 851.05M|https://download.cms.gov/nppes/NPPES_Data_Dissemination_April_2023.zip           |
+|2023-04-10 |NPPES Data Dissemination Monthly Deactivation Update |   1.78M|https://download.cms.gov/nppes/NPPES_Deactivated_NPI_Report_041023.zip           |
+|2023-04-03 |NPPES Data Dissemination Weekly Update               |   3.62M|https://download.cms.gov/nppes/NPPES_Data_Dissemination_040323_040923_Weekly.zip |
+
+# Grab
+
+```{r grab, eval=FALSE}
+nppez::grab(dir = "D:/nppez_data/zips/")
+```
+
+```{r results='asis', echo=FALSE, eval=FALSE}
+fs::dir_info("D:/nppez_data/zips/") |> 
+  dplyr::select(date = birth_time, file = path, size) |> 
+  dplyr::mutate(date = clock::as_date(date))
+```
+
+|date                |file                                                                 |    size|
+|:-------------------|:--------------------------------------------------------------------|-------:|
+|2023-04-12 12:28:01 |D:/nppez_data/zips/NPPES_Data_Dissemination_040323_040923_Weekly.zip |   3.62M|
+|2023-04-12 12:27:59 |D:/nppez_data/zips/NPPES_Data_Dissemination_April_2023.zip           | 851.05M|
+|2023-04-12 12:28:00 |D:/nppez_data/zips/NPPES_Deactivated_NPI_Report_041023.zip           |   1.78M|
+
+# Peek
+
+```{r, results='asis', eval=FALSE}
+nppez::peek(dir = "D:/nppez_data/zips/")
+```
+
+|zip                                               |filename                                         | compressed_size| uncompressed_size|
+|:-------------------------------------------------|:------------------------------------------------|---------------:|-----------------:|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |npidata_pfile_20230403-20230409.csv              |           2.48M|            28.33M|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |npidata_pfile_20230403-20230409_fileheader.csv   |           1.35K|            11.98K|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |endpoint_pfile_20230403-20230409.csv             |          64.08K|           330.03K|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |endpoint_pfile_20230403-20230409_fileheader.csv  |             154|               431|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |pl_pfile_20230403-20230409.csv                   |         147.18K|           431.35K|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |pl_pfile_20230403-20230409_fileheader.csv        |             160|               578|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |othername_pfile_20230403-20230409.csv            |           30.7K|            86.44K|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |othername_pfile_20230403-20230409_fileheader.csv |              53|                86|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |NPPES_Data_Dissemination_Readme.pdf              |         459.91K|           556.21K|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |NPPES_Data_Dissemination_CodeValues.pdf          |         460.77K|           543.72K|
+|NPPES_Data_Dissemination_April_2023.zip           |othername_pfile_20050523-20230409.csv            |           8.97M|            25.88M|
+|NPPES_Data_Dissemination_April_2023.zip           |othername_pfile_20050523-20230409_fileheader.csv |              53|                86|
+|NPPES_Data_Dissemination_April_2023.zip           |endpoint_pfile_20050523-20230409.csv             |          17.53M|            96.76M|
+|NPPES_Data_Dissemination_April_2023.zip           |endpoint_pfile_20050523-20230409_fileheader.csv  |             154|               431|
+|NPPES_Data_Dissemination_April_2023.zip           |pl_pfile_20050523-20230409.csv                   |             22M|            65.51M|
+|NPPES_Data_Dissemination_April_2023.zip           |pl_pfile_20050523-20230409_fileheader.csv        |             160|               578|
+|NPPES_Data_Dissemination_April_2023.zip           |npidata_pfile_20050523-20230409.csv              |         801.64M|             8.66G|
+|NPPES_Data_Dissemination_April_2023.zip           |npidata_pfile_20050523-20230409_fileheader.csv   |           1.35K|            11.98K|
+|NPPES_Data_Dissemination_April_2023.zip           |NPPES_Data_Dissemination_Readme.pdf              |         459.91K|           556.21K|
+|NPPES_Data_Dissemination_April_2023.zip           |NPPES_Data_Dissemination_CodeValues.pdf          |         460.77K|           543.72K|
+|NPPES_Deactivated_NPI_Report_041023.zip           |NPPES Deactivated NPI Report 20230410.xlsx       |           1.78M|             3.68M|
+
+# Dispense
+
+```{r dispense, eval=FALSE}
+nppez::dispense(zip_dir = "D:/nppez_data/zips/",
+                unzip_dir =  "D:/nppez_data/unzips/")
+```
+
+```{r results='asis', echo=FALSE, eval=FALSE}
+fs::dir_info("D:/nppez_data/unzips/") |> 
+  dplyr::select(date = birth_time, file = path, size) |> 
+  dplyr::mutate(date = clock::as_date(date)) |> 
+  gluedown::md_table()
+```
+
+|date       |file                                                                  |    size|
+|:----------|:---------------------------------------------------------------------|-------:|
+|2023-04-11 |D:/nppez_data/unzips/endpoint_pfile_20050523-20230409.csv             |  96.76M|
+|2023-04-11 |D:/nppez_data/unzips/endpoint_pfile_20050523-20230409_fileheader.csv  |     431|
+|2023-04-12 |D:/nppez_data/unzips/endpoint_pfile_20230403-20230409.csv             | 330.03K|
+|2023-04-12 |D:/nppez_data/unzips/endpoint_pfile_20230403-20230409_fileheader.csv  |     431|
+|2023-04-11 |D:/nppez_data/unzips/npidata_pfile_20050523-20230409.csv              |   8.66G|
+|2023-04-11 |D:/nppez_data/unzips/npidata_pfile_20050523-20230409_fileheader.csv   |  11.98K|
+|2023-04-12 |D:/nppez_data/unzips/npidata_pfile_20230403-20230409.csv              |  28.33M|
+|2023-04-12 |D:/nppez_data/unzips/npidata_pfile_20230403-20230409_fileheader.csv   |  11.98K|
+|2023-04-11 |D:/nppez_data/unzips/NPPES Deactivated NPI Report 20230410.xlsx       |   3.68M|
+|2023-04-11 |D:/nppez_data/unzips/NPPES_Data_Dissemination_CodeValues.pdf          | 543.72K|
+|2023-04-11 |D:/nppez_data/unzips/NPPES_Data_Dissemination_Readme.pdf              | 556.21K|
+|2023-04-11 |D:/nppez_data/unzips/othername_pfile_20050523-20230409.csv            |  25.88M|
+|2023-04-11 |D:/nppez_data/unzips/othername_pfile_20050523-20230409_fileheader.csv |      86|
+|2023-04-12 |D:/nppez_data/unzips/othername_pfile_20230403-20230409.csv            |  86.44K|
+|2023-04-12 |D:/nppez_data/unzips/othername_pfile_20230403-20230409_fileheader.csv |      86|
+|2023-04-11 |D:/nppez_data/unzips/pl_pfile_20050523-20230409.csv                   |  65.51M|
+|2023-04-11 |D:/nppez_data/unzips/pl_pfile_20050523-20230409_fileheader.csv        |     578|
+|2023-04-12 |D:/nppez_data/unzips/pl_pfile_20230403-20230409.csv                   | 431.35K|
+|2023-04-12 |D:/nppez_data/unzips/pl_pfile_20230403-20230409_fileheader.csv        |     578|
+|2023-04-11 |D:/nppez_data/unzips/weekly                                           |       0|
+
+
+## Weekly Update File
+
+```{r echo=FALSE, eval=FALSE}
+week_file <- readr::read_csv(
+  "D:/nppez_data/unzipped/weekly/npidata_pfile_20230403-20230409.csv", 
+  col_types = stringr::str_flatten(rep("c", 330))) |> 
+  janitor::clean_names()
+```
+
+
+```{r echo=FALSE, eval=FALSE}
+week_file <- week_file |>
+  dplyr::select(
+    npi,
+    entity_type = entity_type_code,
+    replacement_npi,
+    ein = employer_identification_number_ein,
+    organization_legal_name = provider_organization_name_legal_business_name,
+    last_name = provider_last_name_legal_name,
+    first_name = provider_first_name,
+    middle_name = provider_middle_name,
+    prefix_name = provider_name_prefix_text,
+    suffix_name = provider_name_suffix_text,
+    credential = provider_credential_text,
+    organization_other_name = provider_other_organization_name,
+    organization_other_type = provider_other_organization_name_type_code,
+    other_last_name = provider_other_last_name,
+    other_first_name = provider_other_first_name,
+    other_middle_name = provider_other_middle_name,
+    other_prefix_name = provider_other_name_prefix_text,
+    other_suffix_name = provider_other_name_suffix_text,
+    other_credential = provider_other_credential_text,
+    other_last_name_type = provider_other_last_name_type_code,
+    address_mailing_line1 = provider_first_line_business_mailing_address,
+    address_mailing_line2 = provider_second_line_business_mailing_address,
+    address_mailing_city = provider_business_mailing_address_city_name,
+    address_mailing_state = provider_business_mailing_address_state_name,
+    address_mailing_zip = provider_business_mailing_address_postal_code,
+    address_mailing_country = provider_business_mailing_address_country_code_if_outside_u_s,
+    address_mailing_phone = provider_business_mailing_address_telephone_number,
+    address_mailing_fax = provider_business_mailing_address_fax_number,
+    address_practice_line1 = provider_first_line_business_practice_location_address,
+    address_practice_line2 = provider_second_line_business_practice_location_address,
+    address_practice_city = provider_business_practice_location_address_city_name,
+    address_practice_state = provider_business_practice_location_address_state_name,
+    address_practice_zip = provider_business_practice_location_address_postal_code,
+    address_practice_country = provider_business_practice_location_address_country_code_if_outside_u_s,
+    address_practice_phone = provider_business_practice_location_address_telephone_number,
+    address_practice_fax = provider_business_practice_location_address_fax_number,
+    enumeration_date = provider_enumeration_date,
+    certification_date,
+    last_updated = last_update_date,
+    npi_deactivation_reason_code = npi_deactivation_reason_code,
+    npi_deactivation_date = npi_deactivation_date,
+    npi_reactivation_date = npi_reactivation_date,
+    gender = provider_gender_code,
+    authoff_last_name = authorized_official_last_name,
+    authoff_first_name = authorized_official_first_name,
+    authoff_middle_name = authorized_official_middle_name,
+    authoff_prefix_name = authorized_official_name_prefix_text,
+    authoff_suffix_name = authorized_official_name_suffix_text,
+    authoff_credential = authorized_official_credential_text,
+    authoff_position = authorized_official_title_or_position,
+    authoff_phone = authorized_official_telephone_number,
+    is_sole_proprietor,
+    is_organization_subpart,
+    parent_organization_lbn,
+    parent_organization_tin,
+    taxonomy_code_1 = healthcare_provider_taxonomy_code_1, 
+    primary_taxonomy_switch_1 = healthcare_provider_primary_taxonomy_switch_1, 
+    taxonomy_group_1 = healthcare_provider_taxonomy_group_1, 
+    license_number_1 = provider_license_number_1, 
+    license_state_1 = provider_license_number_state_code_1, 
+    taxonomy_code_2 = healthcare_provider_taxonomy_code_2, 
+    primary_taxonomy_switch_2 = healthcare_provider_primary_taxonomy_switch_2, 
+    taxonomy_group_2 = healthcare_provider_taxonomy_group_2, 
+    license_number_2 = provider_license_number_2, 
+    license_state_2 = provider_license_number_state_code_2, 
+    taxonomy_code_3 = healthcare_provider_taxonomy_code_3, 
+    primary_taxonomy_switch_3 = healthcare_provider_primary_taxonomy_switch_3, 
+    taxonomy_group_3 = healthcare_provider_taxonomy_group_3, 
+    license_number_3 = provider_license_number_3, 
+    license_state_3 = provider_license_number_state_code_3, 
+    taxonomy_code_4 = healthcare_provider_taxonomy_code_4, 
+    primary_taxonomy_switch_4 = healthcare_provider_primary_taxonomy_switch_4, 
+    taxonomy_group_4 = healthcare_provider_taxonomy_group_4, 
+    license_number_4 = provider_license_number_4, 
+    license_state_4 = provider_license_number_state_code_4,
+    taxonomy_code_5 = healthcare_provider_taxonomy_code_5,
+    primary_taxonomy_switch_5 = healthcare_provider_primary_taxonomy_switch_5, 
+    taxonomy_group_5 = healthcare_provider_taxonomy_group_5, 
+    license_number_5 = provider_license_number_5, 
+    license_state_5 = provider_license_number_state_code_5, 
+    taxonomy_code_6 = healthcare_provider_taxonomy_code_6, 
+    primary_taxonomy_switch_6 = healthcare_provider_primary_taxonomy_switch_6, 
+    taxonomy_group_6 = healthcare_provider_taxonomy_group_6, 
+    license_number_6 = provider_license_number_6, 
+    license_state_6 = provider_license_number_state_code_6, 
+    taxonomy_code_7 = healthcare_provider_taxonomy_code_7, 
+    primary_taxonomy_switch_7 = healthcare_provider_primary_taxonomy_switch_7, 
+    taxonomy_group_7 = healthcare_provider_taxonomy_group_7, 
+    license_number_7 = provider_license_number_7, 
+    license_state_7 = provider_license_number_state_code_7, 
+    taxonomy_code_8 = healthcare_provider_taxonomy_code_8, 
+    primary_taxonomy_switch_8 = healthcare_provider_primary_taxonomy_switch_8, 
+    taxonomy_group_8 = healthcare_provider_taxonomy_group_8, 
+    license_number_8 = provider_license_number_8, 
+    license_state_8 = provider_license_number_state_code_8, 
+    taxonomy_code_9 = healthcare_provider_taxonomy_code_9, 
+    primary_taxonomy_switch_9 = healthcare_provider_primary_taxonomy_switch_9, 
+    taxonomy_group_9 = healthcare_provider_taxonomy_group_9, 
+    license_number_9 = provider_license_number_9, 
+    license_state_9 = provider_license_number_state_code_9, 
+    taxonomy_code_10 = healthcare_provider_taxonomy_code_10, 
+    primary_taxonomy_switch_10 = healthcare_provider_primary_taxonomy_switch_10, 
+    taxonomy_group_10 = healthcare_provider_taxonomy_group_10, 
+    license_number_10 = provider_license_number_10, 
+    license_state_10 = provider_license_number_state_code_10, 
+    taxonomy_code_11 = healthcare_provider_taxonomy_code_11, 
+    primary_taxonomy_switch_11 = healthcare_provider_primary_taxonomy_switch_11, 
+    taxonomy_group_11 = healthcare_provider_taxonomy_group_11, 
+    license_number_11 = provider_license_number_11, 
+    license_state_11 = provider_license_number_state_code_11, 
+    taxonomy_code_12 = healthcare_provider_taxonomy_code_12, 
+    primary_taxonomy_switch_12 = healthcare_provider_primary_taxonomy_switch_12, 
+    taxonomy_group_12 = healthcare_provider_taxonomy_group_12, 
+    license_number_12 = provider_license_number_12, 
+    license_state_12 = provider_license_number_state_code_12, 
+    taxonomy_code_13 = healthcare_provider_taxonomy_code_13, 
+    primary_taxonomy_switch_13 = healthcare_provider_primary_taxonomy_switch_13, 
+    taxonomy_group_13 = healthcare_provider_taxonomy_group_13, 
+    license_number_13 = provider_license_number_13, 
+    license_state_13 = provider_license_number_state_code_13, 
+    taxonomy_code_14 = healthcare_provider_taxonomy_code_14, 
+    primary_taxonomy_switch_14 = healthcare_provider_primary_taxonomy_switch_14, 
+    taxonomy_group_14 = healthcare_provider_taxonomy_group_14, 
+    license_number_14 = provider_license_number_14, 
+    license_state_14 = provider_license_number_state_code_14, 
+    taxonomy_code_15 = healthcare_provider_taxonomy_code_15, 
+    primary_taxonomy_switch_15 = healthcare_provider_primary_taxonomy_switch_15, 
+    taxonomy_group_15 = healthcare_provider_taxonomy_group_15, 
+    license_number_15 = provider_license_number_15, 
+    license_state_15 = provider_license_number_state_code_15,
+    identifier_1 = other_provider_identifier_1, 
+    identifier_2 = other_provider_identifier_2, 
+    identifier_3 = other_provider_identifier_3, 
+    identifier_4 = other_provider_identifier_4, 
+    identifier_5 = other_provider_identifier_5, 
+    identifier_6 = other_provider_identifier_6, 
+    identifier_7 = other_provider_identifier_7, 
+    identifier_8 = other_provider_identifier_8, 
+    identifier_9 = other_provider_identifier_9, 
+    identifier_10 = other_provider_identifier_10, 
+    identifier_11 = other_provider_identifier_11, 
+    identifier_12 = other_provider_identifier_12, 
+    identifier_13 = other_provider_identifier_13, 
+    identifier_14 = other_provider_identifier_14, 
+    identifier_15 = other_provider_identifier_15, 
+    identifier_16 = other_provider_identifier_16, 
+    identifier_17 = other_provider_identifier_17, 
+    identifier_18 = other_provider_identifier_18, 
+    identifier_19 = other_provider_identifier_19, 
+    identifier_20 = other_provider_identifier_20, 
+    identifier_21 = other_provider_identifier_21, 
+    identifier_22 = other_provider_identifier_22, 
+    identifier_23 = other_provider_identifier_23, 
+    identifier_24 = other_provider_identifier_24, 
+    identifier_25 = other_provider_identifier_25, 
+    identifier_26 = other_provider_identifier_26, 
+    identifier_27 = other_provider_identifier_27, 
+    identifier_28 = other_provider_identifier_28, 
+    identifier_29 = other_provider_identifier_29, 
+    identifier_30 = other_provider_identifier_30, 
+    identifier_31 = other_provider_identifier_31, 
+    identifier_32 = other_provider_identifier_32, 
+    identifier_33 = other_provider_identifier_33, 
+    identifier_34 = other_provider_identifier_34, 
+    identifier_35 = other_provider_identifier_35, 
+    identifier_36 = other_provider_identifier_36, 
+    identifier_37 = other_provider_identifier_37, 
+    identifier_38 = other_provider_identifier_38, 
+    identifier_39 = other_provider_identifier_39, 
+    identifier_40 = other_provider_identifier_40, 
+    identifier_41 = other_provider_identifier_41, 
+    identifier_42 = other_provider_identifier_42, 
+    identifier_43 = other_provider_identifier_43, 
+    identifier_44 = other_provider_identifier_44, 
+    identifier_45 = other_provider_identifier_45, 
+    identifier_46 = other_provider_identifier_46, 
+    identifier_47 = other_provider_identifier_47, 
+    identifier_48 = other_provider_identifier_48, 
+    identifier_49 = other_provider_identifier_49, 
+    identifier_50 = other_provider_identifier_50,
+    identifier_type_1 = other_provider_identifier_type_code_1, 
+    identifier_type_2 = other_provider_identifier_type_code_2, 
+    identifier_type_3 = other_provider_identifier_type_code_3, 
+    identifier_type_4 = other_provider_identifier_type_code_4, 
+    identifier_type_5 = other_provider_identifier_type_code_5, 
+    identifier_type_6 = other_provider_identifier_type_code_6, 
+    identifier_type_7 = other_provider_identifier_type_code_7, 
+    identifier_type_8 = other_provider_identifier_type_code_8, 
+    identifier_type_9 = other_provider_identifier_type_code_9, 
+    identifier_type_10 = other_provider_identifier_type_code_10, 
+    identifier_type_11 = other_provider_identifier_type_code_11, 
+    identifier_type_12 = other_provider_identifier_type_code_12, 
+    identifier_type_13 = other_provider_identifier_type_code_13, 
+    identifier_type_14 = other_provider_identifier_type_code_14, 
+    identifier_type_15 = other_provider_identifier_type_code_15, 
+    identifier_type_16 = other_provider_identifier_type_code_16, 
+    identifier_type_17 = other_provider_identifier_type_code_17, 
+    identifier_type_18 = other_provider_identifier_type_code_18, 
+    identifier_type_19 = other_provider_identifier_type_code_19, 
+    identifier_type_20 = other_provider_identifier_type_code_20, 
+    identifier_type_21 = other_provider_identifier_type_code_21, 
+    identifier_type_22 = other_provider_identifier_type_code_22, 
+    identifier_type_23 = other_provider_identifier_type_code_23, 
+    identifier_type_24 = other_provider_identifier_type_code_24, 
+    identifier_type_25 = other_provider_identifier_type_code_25, 
+    identifier_type_26 = other_provider_identifier_type_code_26, 
+    identifier_type_27 = other_provider_identifier_type_code_27, 
+    identifier_type_28 = other_provider_identifier_type_code_28, 
+    identifier_type_29 = other_provider_identifier_type_code_29, 
+    identifier_type_30 = other_provider_identifier_type_code_30, 
+    identifier_type_31 = other_provider_identifier_type_code_31, 
+    identifier_type_32 = other_provider_identifier_type_code_32, 
+    identifier_type_33 = other_provider_identifier_type_code_33, 
+    identifier_type_34 = other_provider_identifier_type_code_34, 
+    identifier_type_35 = other_provider_identifier_type_code_35, 
+    identifier_type_36 = other_provider_identifier_type_code_36, 
+    identifier_type_37 = other_provider_identifier_type_code_37, 
+    identifier_type_38 = other_provider_identifier_type_code_38, 
+    identifier_type_39 = other_provider_identifier_type_code_39, 
+    identifier_type_40 = other_provider_identifier_type_code_40, 
+    identifier_type_41 = other_provider_identifier_type_code_41, 
+    identifier_type_42 = other_provider_identifier_type_code_42, 
+    identifier_type_43 = other_provider_identifier_type_code_43, 
+    identifier_type_44 = other_provider_identifier_type_code_44, 
+    identifier_type_45 = other_provider_identifier_type_code_45, 
+    identifier_type_46 = other_provider_identifier_type_code_46, 
+    identifier_type_47 = other_provider_identifier_type_code_47, 
+    identifier_type_48 = other_provider_identifier_type_code_48, 
+    identifier_type_49 = other_provider_identifier_type_code_49, 
+    identifier_type_50 = other_provider_identifier_type_code_50,
+    identifier_state_1 = other_provider_identifier_state_1, 
+    identifier_state_2 = other_provider_identifier_state_2, 
+    identifier_state_3 = other_provider_identifier_state_3, 
+    identifier_state_4 = other_provider_identifier_state_4, 
+    identifier_state_5 = other_provider_identifier_state_5, 
+    identifier_state_6 = other_provider_identifier_state_6, 
+    identifier_state_7 = other_provider_identifier_state_7, 
+    identifier_state_8 = other_provider_identifier_state_8, 
+    identifier_state_9 = other_provider_identifier_state_9, 
+    identifier_state_10 = other_provider_identifier_state_10, 
+    identifier_state_11 = other_provider_identifier_state_11, 
+    identifier_state_12 = other_provider_identifier_state_12, 
+    identifier_state_13 = other_provider_identifier_state_13, 
+    identifier_state_14 = other_provider_identifier_state_14, 
+    identifier_state_15 = other_provider_identifier_state_15, 
+    identifier_state_16 = other_provider_identifier_state_16, 
+    identifier_state_17 = other_provider_identifier_state_17, 
+    identifier_state_18 = other_provider_identifier_state_18, 
+    identifier_state_19 = other_provider_identifier_state_19, 
+    identifier_state_20 = other_provider_identifier_state_20, 
+    identifier_state_21 = other_provider_identifier_state_21, 
+    identifier_state_22 = other_provider_identifier_state_22, 
+    identifier_state_23 = other_provider_identifier_state_23, 
+    identifier_state_24 = other_provider_identifier_state_24, 
+    identifier_state_25 = other_provider_identifier_state_25, 
+    identifier_state_26 = other_provider_identifier_state_26, 
+    identifier_state_27 = other_provider_identifier_state_27, 
+    identifier_state_28 = other_provider_identifier_state_28, 
+    identifier_state_29 = other_provider_identifier_state_29, 
+    identifier_state_30 = other_provider_identifier_state_30, 
+    identifier_state_31 = other_provider_identifier_state_31, 
+    identifier_state_32 = other_provider_identifier_state_32, 
+    identifier_state_33 = other_provider_identifier_state_33, 
+    identifier_state_34 = other_provider_identifier_state_34, 
+    identifier_state_35 = other_provider_identifier_state_35, 
+    identifier_state_36 = other_provider_identifier_state_36, 
+    identifier_state_37 = other_provider_identifier_state_37, 
+    identifier_state_38 = other_provider_identifier_state_38, 
+    identifier_state_39 = other_provider_identifier_state_39, 
+    identifier_state_40 = other_provider_identifier_state_40, 
+    identifier_state_41 = other_provider_identifier_state_41, 
+    identifier_state_42 = other_provider_identifier_state_42, 
+    identifier_state_43 = other_provider_identifier_state_43, 
+    identifier_state_44 = other_provider_identifier_state_44, 
+    identifier_state_45 = other_provider_identifier_state_45, 
+    identifier_state_46 = other_provider_identifier_state_46, 
+    identifier_state_47 = other_provider_identifier_state_47, 
+    identifier_state_48 = other_provider_identifier_state_48, 
+    identifier_state_49 = other_provider_identifier_state_49, 
+    identifier_state_50 = other_provider_identifier_state_50,
+    identifier_issuer_1 = other_provider_identifier_issuer_1, 
+    identifier_issuer_2 = other_provider_identifier_issuer_2, 
+    identifier_issuer_3 = other_provider_identifier_issuer_3, 
+    identifier_issuer_4 = other_provider_identifier_issuer_4, 
+    identifier_issuer_5 = other_provider_identifier_issuer_5, 
+    identifier_issuer_6 = other_provider_identifier_issuer_6, 
+    identifier_issuer_7 = other_provider_identifier_issuer_7, 
+    identifier_issuer_8 = other_provider_identifier_issuer_8, 
+    identifier_issuer_9 = other_provider_identifier_issuer_9, 
+    identifier_issuer_10 = other_provider_identifier_issuer_10, 
+    identifier_issuer_11 = other_provider_identifier_issuer_11, 
+    identifier_issuer_12 = other_provider_identifier_issuer_12, 
+    identifier_issuer_13 = other_provider_identifier_issuer_13, 
+    identifier_issuer_14 = other_provider_identifier_issuer_14, 
+    identifier_issuer_15 = other_provider_identifier_issuer_15, 
+    identifier_issuer_16 = other_provider_identifier_issuer_16, 
+    identifier_issuer_17 = other_provider_identifier_issuer_17, 
+    identifier_issuer_18 = other_provider_identifier_issuer_18, 
+    identifier_issuer_19 = other_provider_identifier_issuer_19, 
+    identifier_issuer_20 = other_provider_identifier_issuer_20, 
+    identifier_issuer_21 = other_provider_identifier_issuer_21, 
+    identifier_issuer_22 = other_provider_identifier_issuer_22, 
+    identifier_issuer_23 = other_provider_identifier_issuer_23, 
+    identifier_issuer_24 = other_provider_identifier_issuer_24, 
+    identifier_issuer_25 = other_provider_identifier_issuer_25, 
+    identifier_issuer_26 = other_provider_identifier_issuer_26, 
+    identifier_issuer_27 = other_provider_identifier_issuer_27, 
+    identifier_issuer_28 = other_provider_identifier_issuer_28, 
+    identifier_issuer_29 = other_provider_identifier_issuer_29, 
+    identifier_issuer_30 = other_provider_identifier_issuer_30, 
+    identifier_issuer_31 = other_provider_identifier_issuer_31, 
+    identifier_issuer_32 = other_provider_identifier_issuer_32, 
+    identifier_issuer_33 = other_provider_identifier_issuer_33, 
+    identifier_issuer_34 = other_provider_identifier_issuer_34, 
+    identifier_issuer_35 = other_provider_identifier_issuer_35, 
+    identifier_issuer_36 = other_provider_identifier_issuer_36, 
+    identifier_issuer_37 = other_provider_identifier_issuer_37, 
+    identifier_issuer_38 = other_provider_identifier_issuer_38, 
+    identifier_issuer_39 = other_provider_identifier_issuer_39, 
+    identifier_issuer_40 = other_provider_identifier_issuer_40, 
+    identifier_issuer_41 = other_provider_identifier_issuer_41, 
+    identifier_issuer_42 = other_provider_identifier_issuer_42, 
+    identifier_issuer_43 = other_provider_identifier_issuer_43, 
+    identifier_issuer_44 = other_provider_identifier_issuer_44, 
+    identifier_issuer_45 = other_provider_identifier_issuer_45, 
+    identifier_issuer_46 = other_provider_identifier_issuer_46, 
+    identifier_issuer_47 = other_provider_identifier_issuer_47, 
+    identifier_issuer_48 = other_provider_identifier_issuer_48, 
+    identifier_issuer_49 = other_provider_identifier_issuer_49, 
+    identifier_issuer_50 = other_provider_identifier_issuer_50)
+```
+
+```{r echo=FALSE, eval=FALSE}
+week_file |> 
+  tidyr::unite("address_mailing_street", 
+               address_mailing_line1:address_mailing_line2, 
+               remove = TRUE, na.rm = TRUE) |> 
+  tidyr::unite("address_practice_street", 
+               address_practice_line1:address_practice_line2, 
+               remove = TRUE, na.rm = TRUE) |> 
+  dplyr::mutate(ein = dplyr::na_if(ein, "<UNAVAIL>"),
+                enumeration_date = clock::date_parse(enumeration_date, format = "%m/%d/%Y"),
+                certification_date = clock::date_parse(certification_date, format = "%m/%d/%Y"),
+                last_updated = clock::date_parse(last_updated, format = "%m/%d/%Y"),
+                npi_deactivation_date = clock::date_parse(npi_deactivation_date, format = "%m/%d/%Y"),
+                npi_reactivation_date = clock::date_parse(npi_reactivation_date, format = "%m/%d/%Y"),
+                entity_type = dplyr::case_when(entity_type == "1" ~ "Individual",
+                                               entity_type == "2" ~ "Organization",
+                                               is.na(entity_type) ~ NA)) |> 
+  dplyr::count(other_last_name_type, sort = T)
+```
+
+
+```{r echo=FALSE, eval=FALSE}
+#   - Strip all special chars from credential columns (".", ",")
+# ids  npis
+#-----------
+# 0  = 22487
+# 1  = 2377
+# 2  = 821
+# 3  = 382
+# 4  = 191
+# 5  = 121
+# 6  = 95
+# 7  = 68
+# 8  = 51
+
+week_file |> 
+  dplyr::select(c(npi, dplyr::num_range("identifier_type_", 1:50)))
+```
+
+
+## Monthly Deactivation File
+
+## Monthly Data Dissemination Files
