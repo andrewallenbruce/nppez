@@ -4,7 +4,7 @@
 \alias{grab}
 \title{Download NPPES ZIP files to a local directory}
 \usage{
-grab(dir = "D:/nppez_data/zip_files/")
+grab(dir)
 }
 \arguments{
 \item{dir}{path to local directory to download ZIPs to}

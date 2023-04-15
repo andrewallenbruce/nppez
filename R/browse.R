@@ -69,7 +69,7 @@ browse <- function() {
 #' }
 #' @autoglobal
 #' @export
-grab <- function(dir = "D:/nppez_data/zip_files/") {
+grab <- function(dir) {
 
   zips <- nppez::browse()$zip_url
 
@@ -95,10 +95,10 @@ peek <- function(dir) {
     tibble::deframe() |>
     rlang::set_names(basename) |>
     purrr::map(zip::zip_list) |>
-    purrr::list_rbind(names_to = "zip") |>
-    dplyr::mutate(compressed_size = fs::fs_bytes(compressed_size),
-                  uncompressed_size = fs::fs_bytes(uncompressed_size)) |>
-    dplyr::select(zip:uncompressed_size)
+    purrr::list_rbind(names_to = "parent_zip") |>
+    dplyr::mutate(size_compressed = fs::fs_bytes(compressed_size),
+                  size_uncompressed = fs::fs_bytes(uncompressed_size)) |>
+    dplyr::select(parent_zip, filename, size_compressed, size_uncompressed)
 
   }
 
@@ -119,4 +119,9 @@ dispense <- function(zip_dir, unzip_dir) {
     tibble::deframe() |>
     purrr::walk(zip::unzip, exdir = unzip_dir)
 
-  }
+}
+
+
+
+
+
