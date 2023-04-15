@@ -193,13 +193,10 @@ fs::dir_info("D:/nppez_data/unzips/") |>
 
   Each week, a file will be available for download. This file will contain only the new FOIA-disclosable NPPES provider data since the last weekly or monthly file was generated.
 
-```{r echo=FALSE, eval=FALSE}
+```{r}
 weekly <- clean_weekly_update()
-
-weekly |> 
-  dplyr::filter(entity_type == "Organization") |> 
-  janitor::remove_empty() |> 
-  dplyr::filter(!is.na(npi_deactivation_date))
+weekly <- datawizard::data_peek(weekly)
+weekly
 ```
 
 
@@ -207,7 +204,7 @@ weekly |>
 
 The FOIA-disclosable data for a health care provider (individual or organization) who deactivated an NPI will now be disclosed within the files.  For a deactivated NPI, CMS will only disclose the deactivated NPI and the associated date of deactivation within the files.
 
-```{r results='asis'}
+```{r}
 deactivation <- clean_deactivation(dir_xlsx = "D:/nppez_data/unzips")
 deactivation <- datawizard::data_peek(deactivation)
 deactivation
@@ -217,7 +214,7 @@ deactivation
 
   − File contains all Endpoints associated with Type 1 and Type 2 NPIs
 
-```{r results='asis'}
+```{r}
 endpoints <- readr::read_csv(
   "D:/nppez_data/unzips/endpoint_pfile_20050523-20230409.csv", 
   col_types = "ccc",
@@ -231,7 +228,7 @@ endpoints
 
   − File contains additional Other Names associated with Type 2 NPIs
 
-```{r results='asis'}
+```{r}
 othernames <- readr::read_csv(
   "D:/nppez_data/unzips/othername_pfile_20050523-20230409.csv", 
   col_types = "ccc",
@@ -246,7 +243,7 @@ othernames
 
    − File contains all of the non-primary Practice Locations associated with Type 1 and Type 2 NPIs.
 
-```{r results='asis'}
+```{r}
 locations <- readr::read_csv(
   "D:/nppez_data/unzips/pl_pfile_20050523-20230409.csv", 
   #col_types = "ccc",
