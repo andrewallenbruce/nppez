@@ -4,7 +4,7 @@
 \alias{clean_endpoints}
 \title{Clean the Monthly NPPES NPI Endpoints File}
 \usage{
-clean_endpoints(csv)
+clean_endpoints(csv = NULL)
 }
 \arguments{
 \item{csv}{full path to Monthly NPPES Endpoints file (.csv)}

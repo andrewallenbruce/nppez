@@ -42,29 +42,61 @@ clean_deactivation <- function(dir_xlsx) {
 #' }
 #' @autoglobal
 #' @export
-clean_endpoints <- function(csv) {
+clean_endpoints <- function(csv = NULL) {
 
-  path <- list.files(xlsx,
-                     pattern = "[.]xlsx$",
-                     full.names = TRUE)
+  endpoints <- readr::read_csv(
+    "D:/nppez_data/unzips/endpoint_pfile_20050523-20230409.csv",
+    col_types = stringr::str_flatten(rep("c", 19)),
+    name_repair = janitor::make_clean_names) |>
+    dplyr::mutate(affiliation = dplyr::case_when(affiliation == "Y" ~ TRUE,
+                                                 affiliation == "N" ~ FALSE,
+                                                 .default = NA),
+                  endpoint_type = NULL,
+                  use_code = NULL,
+                  content_description = NULL) |>
+    tidyr::unite("affiliation_address_street",
+                 affiliation_address_line_one:affiliation_address_line_two,
+                 remove = TRUE, na.rm = TRUE)
 
-  cols <- readxl::read_xlsx(path = path, range = "A1:B2",
-                            .name_repair = janitor::make_clean_names) |>
-    unlist(use.names = FALSE) |>
-    janitor::make_clean_names() |>
-    stringr::str_remove("nppes_")
+  return(endpoints)
 
-  results <- readxl::read_xlsx(path = path, sheet = 1,
-                               skip = 2, trim_ws = TRUE,
-                               .name_repair = janitor::make_clean_names,
-                               col_names = cols, col_types = c("text")) |>
-    dplyr::mutate(deactivation_date = clock::date_parse(deactivation_date,
-                                                        format = "%m/%d/%Y"))
+}
 
-  results$release_date <- stringr::str_extract(path, "\\d{8}") |>
-    clock::date_parse(format = "%Y%m%d")
+#' Clean the Monthly NPPES NPI Secondary Practice Locations File
+#' @param csv full path to Monthly NPPES Secondary Practice Locations file (.csv)
+#' @return tibble of cleaned data
+#' @examples
+#' \dontrun{
+#' clean_locations("D:/<directory>/<filename>.csv")
+#' }
+#' @autoglobal
+#' @export
+clean_locations <- function(csv = NULL) {
 
-  return(results)
+  ## Non-Primary Practice Locations
+  locations <- readr::read_csv(
+    "D:/nppez_data/unzips/pl_pfile_20050523-20230409.csv",
+    col_types = "cccccccccc",
+    name_repair = janitor::make_clean_names) |>
+    janitor::remove_empty() |>
+    dplyr::mutate(address_type = "secondary", .after = npi) |>
+    tidyr::unite("address_street",
+                 provider_secondary_practice_location_address_address_line_1:provider_secondary_practice_location_address_address_line_2,
+                 remove = TRUE, na.rm = TRUE)
+
+  names(locations) <- names(locations) |>
+    stringr::str_remove_all("provider_secondary_practice_location_") |>
+    stringr::str_remove_all("provider_practice_location_") |>
+    stringr::str_remove_all("_name") |>
+    stringr::str_remove_all("_number") |>
+    stringr::str_remove_all("tele") |>
+    stringr::str_remove_all("_code_if_outside_u_s")
+
+  locations <- locations |>
+    dplyr::mutate(address_phone_extension = NULL) |>
+    dplyr::rename(address_zip = address_postal_code)
+
+  return(locations)
 
 }
 
@@ -73,18 +105,19 @@ clean_endpoints <- function(csv) {
 #' @return tibble of cleaned data
 #' @examples
 #' \dontrun{
-#' clean_weekly_update("D:/<directory>/<filename>.csv")
+#' clean_weekly("D:/<directory>/<filename>.csv")
 #' }
 #' @autoglobal
 #' @export
-clean_weekly_update <- function(csv) {
+clean_weekly <- function(csv = NULL) {
 
-  week_file <- readr::read_csv(
+  week <- readr::read_csv(
     "D:/nppez_data/unzips/weekly/npidata_pfile_20230403-20230409.csv",
     col_types = stringr::str_flatten(rep("c", 330)),
     name_repair = janitor::make_clean_names)
 
-  week_file <- week_file |>
+
+  week <- week |>
     dplyr::select(
       npi,
       entity_type = entity_type_code,
@@ -417,7 +450,7 @@ clean_weekly_update <- function(csv) {
       identifier_issuer_49 = other_provider_identifier_issuer_49,
       identifier_issuer_50 = other_provider_identifier_issuer_50)
 
-  week_file <- week_file |>
+  week <- week |>
     tidyr::unite("address_mailing_street",
                  address_mailing_line1:address_mailing_line2,
                  remove = TRUE, na.rm = TRUE) |>
@@ -425,23 +458,188 @@ clean_weekly_update <- function(csv) {
                  address_practice_line1:address_practice_line2,
                  remove = TRUE, na.rm = TRUE) |>
     dplyr::mutate(ein = dplyr::na_if(ein, "<UNAVAIL>"),
-                  enumeration_date = clock::date_parse(enumeration_date, format = "%m/%d/%Y"),
-                  certification_date = clock::date_parse(certification_date, format = "%m/%d/%Y"),
-                  last_updated = clock::date_parse(last_updated, format = "%m/%d/%Y"),
-                  npi_deactivation_date = clock::date_parse(npi_deactivation_date, format = "%m/%d/%Y"),
-                  npi_reactivation_date = clock::date_parse(npi_reactivation_date, format = "%m/%d/%Y"),
-                  entity_type = dplyr::case_when(entity_type == "1" ~ "Individual",
-                                                 entity_type == "2" ~ "Organization",
-                                                 is.na(entity_type) ~ NA))
+                  enumeration_date = clock::date_parse(enumeration_date,
+                                                       format = "%m/%d/%Y"),
+                  certification_date = clock::date_parse(certification_date,
+                                                         format = "%m/%d/%Y"),
+                  last_updated = clock::date_parse(last_updated,
+                                                   format = "%m/%d/%Y"),
+                  npi_deactivation_date = clock::date_parse(npi_deactivation_date,
+                                                            format = "%m/%d/%Y"),
+                  npi_reactivation_date = clock::date_parse(npi_reactivation_date,
+                                                            format = "%m/%d/%Y"),
+                  entity_type = dplyr::case_when(
+                    entity_type == "1" ~ "Individual",
+                    entity_type == "2" ~ "Organization",
+                    is.na(entity_type) ~ NA))
+
   ####### COMPARE TO DELETIONS
-  week_deactivate <- week_file |>
-    dplyr::filter(is.na(gender), is.na(entity_type)) |>
+  deactivate <- week |>
+    dplyr::filter(is.na(gender),
+                  is.na(entity_type)) |>
     dplyr::select(npi)
 
   ###### REMOVE DELETIONS
-  week_file <- week_file |>
-    dplyr::anti_join(week_deactivate)
+  week <- dplyr::anti_join(week, deactivate)
 
-  return(week_file)
+  week <- janitor::remove_empty(week)
+
+  return(week)
 
 }
+
+#' Create Identifiers Table from NPPES NPI File
+#' @param df cleaned tibble from clean_nppes()
+#' @return tibble of cleaned data
+#' @examples
+#' \dontrun{
+#' create_identifiers()
+#' }
+#' @autoglobal
+#' @export
+create_identifiers <- function(df) {
+
+  identifier <- df |>
+    dplyr::select(npi,
+                  dplyr::num_range("identifier_", 1:50)) |>
+    tidyr::pivot_longer(!npi,
+                        names_to = "group",
+                        values_to = "identifier",
+                        names_prefix = "identifier_",
+                        values_drop_na = TRUE)
+
+  type <- df |>
+    dplyr::select(npi,
+                  dplyr::num_range("identifier_type_", 1:50)) |>
+    tidyr::pivot_longer(!npi,
+                        names_to = "group",
+                        values_to = "id_type",
+                        names_prefix = "identifier_type_",
+                        values_drop_na = TRUE)
+
+  state <- df |>
+    dplyr::select(npi,
+                  dplyr::num_range("identifier_state_", 1:50)) |>
+    tidyr::pivot_longer(!npi,
+                        names_to = "group",
+                        values_to = "id_state",
+                        names_prefix = "identifier_state_",
+                        values_drop_na = TRUE)
+
+  issuer <- df |>
+    dplyr::select(npi,
+                  dplyr::num_range("identifier_issuer_", 1:50)) |>
+    tidyr::pivot_longer(!npi,
+                        names_to = "group",
+                        values_to = "id_issuer",
+                        names_prefix = "identifier_issuer_",
+                        values_drop_na = TRUE)
+
+  identifier |>
+    dplyr::left_join(type, by = dplyr::join_by(npi, group)) |>
+    dplyr::left_join(state, by = dplyr::join_by(npi, group)) |>
+    dplyr::left_join(issuer, by = dplyr::join_by(npi, group)) |>
+    dplyr::select(npi, identifier, id_type, id_state, id_issuer)
+}
+
+#' Create Taxonomy Table from NPPES NPI File
+#' @param df cleaned tibble from clean_nppes()
+#' @return tibble of cleaned data
+#' @examples
+#' \dontrun{
+#' create_taxonomy()
+#' }
+#' @autoglobal
+#' @export
+create_taxonomy <- function(df) {
+
+  code <- df |>
+    dplyr::select(npi,
+                  dplyr::num_range("taxonomy_code_", 1:15)) |>
+    tidyr::pivot_longer(!npi,
+                        names_to = "group",
+                        values_to = "taxonomy_code",
+                        names_prefix = "taxonomy_code_",
+                        values_drop_na = TRUE)
+
+  switch <- df |>
+    dplyr::select(npi,
+                  dplyr::num_range("primary_taxonomy_switch_", 1:15)) |>
+    tidyr::pivot_longer(!npi,
+                        names_to = "group",
+                        values_to = "primary_taxonomy",
+                        names_prefix = "primary_taxonomy_switch_",
+                        values_drop_na = TRUE) |>
+    dplyr::mutate(primary_taxonomy = dplyr::case_when(
+      primary_taxonomy == "Y" ~ TRUE,
+      primary_taxonomy == "N" ~ FALSE,
+      .default = NA))
+
+  group <- df |>
+    dplyr::select(npi,
+                  dplyr::num_range("taxonomy_group_", 1:15)) |>
+    tidyr::pivot_longer(!npi,
+                        names_to = "group",
+                        values_to = "taxonomy_group",
+                        names_prefix = "taxonomy_group_",
+                        values_drop_na = TRUE)
+
+  license <- df |>
+    dplyr::select(npi,
+                  dplyr::num_range("license_number_", 1:15)) |>
+    tidyr::pivot_longer(!npi,
+                        names_to = "group",
+                        values_to = "license_no",
+                        names_prefix = "license_number_",
+                        values_drop_na = TRUE)
+  state <- df |>
+    dplyr::select(npi,
+                  dplyr::num_range("license_state_", 1:15)) |>
+    tidyr::pivot_longer(!npi,
+                        names_to = "group",
+                        values_to = "license_state",
+                        names_prefix = "license_state_",
+                        values_drop_na = TRUE)
+
+  code |>
+    dplyr::left_join(switch, by = dplyr::join_by(npi, group)) |>
+    dplyr::left_join(group, by = dplyr::join_by(npi, group)) |>
+    dplyr::left_join(license, by = dplyr::join_by(npi, group)) |>
+    dplyr::left_join(state, by = dplyr::join_by(npi, group)) |>
+    dplyr::select(npi,
+                  taxonomy_code,
+                  primary_taxonomy,
+                  taxonomy_group,
+                  license_no,
+                  license_state)
+}
+
+#' Create Address Table from NPPES NPI File
+#' @param df cleaned tibble from clean_nppes()
+#' @return tibble of cleaned data
+#' @examples
+#' \dontrun{
+#' create_address()
+#' }
+#' @autoglobal
+#' @export
+create_address <- function(df) {
+
+  practice <- df |>
+    dplyr::select(npi, entity_type, dplyr::contains("address_practice_")) |>
+    dplyr::mutate(address_type = "practice", .after = npi)
+
+  names(practice) <- names(practice) |>
+    stringr::str_remove_all("practice_")
+
+  mailing <- df |>
+    dplyr::select(npi, entity_type,  dplyr::contains("address_mailing_")) |>
+    dplyr::mutate(address_type = "mailing", .after = npi)
+
+  names(mailing) <- names(mailing) |>
+    stringr::str_remove_all("mailing_")
+
+  dplyr::bind_rows(practice, mailing)
+
+}
+

@@ -36,51 +36,67 @@ devtools::install_github("andrewallenbruce/nppez")
 library(nppez)
 ```
 
-# Browse
+# Ask
 
-```{r browse, results='asis', eval=FALSE}
-nppez::browse()
+```{r ask, eval=FALSE}
+nppez::ask()
 ```
 
-|date       |file                                                 |    size|zip_url                                                                          |
-|:----------|:----------------------------------------------------|-------:|:--------------------------------------------------------------------------------|
-|2023-04-10 |NPPES Data Dissemination                             | 851.05M|https://download.cms.gov/nppes/NPPES_Data_Dissemination_April_2023.zip           |
-|2023-04-10 |NPPES Data Dissemination Monthly Deactivation Update |   1.78M|https://download.cms.gov/nppes/NPPES_Deactivated_NPI_Report_041023.zip           |
-|2023-04-03 |NPPES Data Dissemination Weekly Update               |   3.62M|https://download.cms.gov/nppes/NPPES_Data_Dissemination_040323_040923_Weekly.zip |
+|release_date | file_age| filesize|filename                                          |
+|:------------|--------:|--------:|:-------------------------------------------------|
+|2023-04-10   |        6|  851.05M|NPPES_Data_Dissemination_April_2023.zip           |
+|2023-04-10   |        6|    1.78M|NPPES_Deactivated_NPI_Report_041023.zip           |
+|2023-04-03   |       13|    3.62M|NPPES_Data_Dissemination_040323_040923_Weekly.zip |
 
 # Grab
 
 ```{r grab, eval=FALSE}
-nppez::grab(dir = "D:/nppez_data/zips/")
+nppez::grab(dir = "C:/<folder-to-save-zip-files-to>")
 ```
 
 ```{r results='asis', echo=FALSE, eval=FALSE}
+# might be easier to assign dir obj to reuse
+# dir <- "D:/nppez_data/zips/"
+# nppez::grab(dir = "D:/nppez_data/zips/")
+
 fs::dir_info("D:/nppez_data/zips/") |> 
-  dplyr::select(date = birth_time, size, filename = path) |> 
-  dplyr::mutate(date = clock::as_date(date)) |> 
+  dplyr::select(download_date = birth_time, 
+                filesize = size, 
+                filename = path) |> 
+  dplyr::mutate(download_date = clock::as_date(download_date)) |> 
   gluedown::md_table()
 ```
 
+|download_date |    size|filename                                                             |
+|:-------------|-------:|:--------------------------------------------------------------------|
+|2023-04-12    |   3.62M|D:/nppez_data/zips/NPPES_Data_Dissemination_040323_040923_Weekly.zip |
+|2023-04-12    | 851.05M|D:/nppez_data/zips/NPPES_Data_Dissemination_April_2023.zip           |
+|2023-04-12    |   1.78M|D:/nppez_data/zips/NPPES_Deactivated_NPI_Report_041023.zip           |
 
-|date       |    size|filename                                                             |
-|:----------|-------:|:--------------------------------------------------------------------|
-|2023-04-12 |   3.62M|D:/nppez_data/zips/NPPES_Data_Dissemination_040323_040923_Weekly.zip |
-|2023-04-12 | 851.05M|D:/nppez_data/zips/NPPES_Data_Dissemination_April_2023.zip           |
-|2023-04-12 |   1.78M|D:/nppez_data/zips/NPPES_Deactivated_NPI_Report_041023.zip           |
 
-# Peek
-
-```{r, results='asis'}
-peek <- nppez::peek(dir = "D:/nppez_data/zips/")
+```{r}
+fs::path_ext("D:/nppez_data/zips/NPPES_Data_Dissemination_040323_040923_Weekly.zip")
+fs::dir_create("D:/nppez_data/zips/testing")
+fs::dir_ls("D:/nppez_data/zips/testing")
+fs::dir_exists("D:/nppez_data/zips/testing")
 ```
 
 
-```{r, results='asis'}
-peek |> 
+# Peek
+
+```{r peek}
+nppez::peek(dir = "<path-to-downloaded-zip-files>")
+```
+
+
+```{r peek-1, eval=FALSE, echo=FALSE}
+nppez::peek(dir = "D:/nppez_data/zips/") |> 
   dplyr::group_by(parent_zip) |> 
   dplyr::mutate(csv = stringr::str_extract_all(filename, "[.]csv$")) |> 
   tidyr::unnest(csv) |>
-  dplyr::mutate(fileheader = stringr::str_ends(filename, "fileheader[.]csv$", negate = TRUE)) |> 
+  dplyr::mutate(fileheader = stringr::str_ends(filename, 
+                                               "fileheader[.]csv$", 
+                                               negate = TRUE)) |> 
   dplyr::filter(fileheader == TRUE) |>
   dplyr::mutate(csv = NULL, fileheader = NULL) |> 
   dplyr::summarise(size_compressed = sum(size_compressed),
@@ -89,102 +105,74 @@ peek |>
 ```
 
 
-```{r, results='asis'}
-peek |> 
-  dplyr::filter(parent_zip == "NPPES_Data_Dissemination_040323_040923_Weekly.zip") |> 
+|parent_zip                                        | size_compressed| size_uncompressed|
+|:-------------------------------------------------|---------------:|-----------------:|
+|NPPES_Data_Dissemination_040323_040923_Weekly.zip |           2.72M|            29.16M|
+|NPPES_Data_Dissemination_April_2023.zip           |         850.15M|             8.84G|
+
+
+
+```{r peek-2, eval=FALSE, echo=FALSE}
+nppez::peek(dir = "D:/nppez_data/zips/") |> 
+dplyr::filter(parent_zip == "NPPES_Data_Dissemination_April_2023.zip") |> 
   dplyr::mutate(csv = stringr::str_extract_all(filename, "[.]csv$")) |> 
   tidyr::unnest(csv) |>
-  dplyr::mutate(fileheader = stringr::str_ends(filename, "fileheader[.]csv$", negate = TRUE)) |> 
+  dplyr::mutate(fileheader = stringr::str_ends(filename, "fileheader[.]csv$", 
+                                               negate = TRUE)) |> 
   dplyr::filter(fileheader == TRUE) |>
   dplyr::mutate(csv = NULL, fileheader = NULL) |> 
   gluedown::md_table()
 ```
 
 
-```{r, results='asis'}
-peek |> 
-dplyr::filter(parent_zip == "NPPES_Data_Dissemination_April_2023.zip") |> 
-  dplyr::mutate(csv = stringr::str_extract_all(filename, "[.]csv$")) |> 
-  tidyr::unnest(csv) |>
-  dplyr::mutate(fileheader = stringr::str_ends(filename, "fileheader[.]csv$", negate = TRUE)) |> 
-  dplyr::filter(fileheader == TRUE) |>
-  dplyr::mutate(csv = NULL, fileheader = NULL) |> 
-  gluedown::md_table()
+|parent_zip                              |filename                              | size_compressed| size_uncompressed|
+|:---------------------------------------|:-------------------------------------|---------------:|-----------------:|
+|NPPES_Data_Dissemination_April_2023.zip |othername_pfile_20050523-20230409.csv |           8.97M|            25.88M|
+|NPPES_Data_Dissemination_April_2023.zip |endpoint_pfile_20050523-20230409.csv  |          17.53M|            96.76M|
+|NPPES_Data_Dissemination_April_2023.zip |pl_pfile_20050523-20230409.csv        |             22M|            65.51M|
+|NPPES_Data_Dissemination_April_2023.zip |npidata_pfile_20050523-20230409.csv   |         801.64M|             8.66G|
+
+
+# Prune
+
+```{r}
+nppez::prune(dir = "D:/nppez_data/zips/")
 ```
 
 # Dispense
-
-```{r, eval=FALSE, echo=FALSE}
-peek |> 
-dplyr::filter(parent_zip == "NPPES_Data_Dissemination_April_2023.zip") |> 
-  dplyr::mutate(csv = stringr::str_extract_all(filename, "[.]csv$")) |> 
-  tidyr::unnest(csv) |>
-  dplyr::mutate(fileheader = stringr::str_ends(filename, "fileheader[.]csv$", negate = TRUE)) |> 
-  dplyr::filter(fileheader == TRUE) |>
-  dplyr::mutate(csv = NULL, fileheader = NULL)
-"NPPES_Data_Dissemination_040323_040923_Weekly.zip"
-"NPPES_Data_Dissemination_April_2023.zip"
-cvec_files <- zip::zip_list("D:/nppez_data/zips/NPPES_Data_Dissemination_040323_040923_Weekly.zip") |> 
-  dplyr::select(filename) |> 
-  dplyr::mutate(fileheader = stringr::str_ends(filename, "fileheader[.]csv$", negate = FALSE)) |> 
-  dplyr::mutate(pdf = stringr::str_ends(filename, "[.]pdf$", negate = TRUE)) |> 
-  dplyr::filter(fileheader == TRUE, pdf == TRUE) |> 
-  dplyr::mutate(fileheader = NULL, pdf = NULL) |> 
-  tibble::deframe()
-
-cvec_files[-4] |> stringr::str_flatten_comma()
-```
-
 
 ```{r dispense, eval=FALSE}
 nppez::dispense(zip_dir = "D:/nppez_data/zips/",
                 unzip_dir =  "D:/nppez_data/unzips/")
 ```
 
-
-```{r, eval=FALSE, echo=FALSE}
-zip::unzip("D:/nppez_data/zips/NPPES_Data_Dissemination_040323_040923_Weekly.zip", files = "npidata_pfile_20230403-20230409_fileheader.csv", exdir = "D:/nppez_data/test01/")
-
-up <- zip::unzip_process()$new(zipfile = "D:/nppez_data/zips/NPPES_Data_Dissemination_April_2023.zip", 
-          exdir = "D:/nppez_data/test01/")
-
-up$
-```
-
 ```{r results='asis', echo=FALSE, eval=FALSE}
 fs::dir_info("D:/nppez_data/unzips/") |> 
   dplyr::select(date = birth_time, size, filename = path) |> 
-  dplyr::mutate(date = clock::as_date(date)) |> 
-  dplyr::mutate(csv = stringr::str_extract_all(filename, "[.]csv$")) |> 
+  dplyr::mutate(date = clock::as_date(date),
+                filename = basename(filename)) |> 
+  dplyr::mutate(csv = stringr::str_extract_all(filename, 
+                                               "[.]csv$")) |> 
   tidyr::unnest(csv) |>
-  dplyr::mutate(fileheader = stringr::str_ends(filename, "fileheader[.]csv$", negate = TRUE)) |> 
+  dplyr::mutate(fileheader = stringr::str_ends(filename, 
+                                               "fileheader[.]csv$", 
+                                               negate = TRUE)) |> 
   dplyr::filter(fileheader == TRUE) |>
-  dplyr::mutate(csv = NULL, fileheader = NULL) |> 
+  dplyr::mutate(csv = NULL, 
+                fileheader = NULL) |> 
   gluedown::md_table()
 ```
 
-|date       |file                                                                  |    size|
-|:----------|:---------------------------------------------------------------------|-------:|
-|2023-04-11 |D:/nppez_data/unzips/endpoint_pfile_20050523-20230409.csv             |  96.76M|
-|2023-04-11 |D:/nppez_data/unzips/endpoint_pfile_20050523-20230409_fileheader.csv  |     431|
-|2023-04-12 |D:/nppez_data/unzips/endpoint_pfile_20230403-20230409.csv             | 330.03K|
-|2023-04-12 |D:/nppez_data/unzips/endpoint_pfile_20230403-20230409_fileheader.csv  |     431|
-|2023-04-11 |D:/nppez_data/unzips/npidata_pfile_20050523-20230409.csv              |   8.66G|
-|2023-04-11 |D:/nppez_data/unzips/npidata_pfile_20050523-20230409_fileheader.csv   |  11.98K|
-|2023-04-12 |D:/nppez_data/unzips/npidata_pfile_20230403-20230409.csv              |  28.33M|
-|2023-04-12 |D:/nppez_data/unzips/npidata_pfile_20230403-20230409_fileheader.csv   |  11.98K|
-|2023-04-11 |D:/nppez_data/unzips/NPPES Deactivated NPI Report 20230410.xlsx       |   3.68M|
-|2023-04-11 |D:/nppez_data/unzips/NPPES_Data_Dissemination_CodeValues.pdf          | 543.72K|
-|2023-04-11 |D:/nppez_data/unzips/NPPES_Data_Dissemination_Readme.pdf              | 556.21K|
-|2023-04-11 |D:/nppez_data/unzips/othername_pfile_20050523-20230409.csv            |  25.88M|
-|2023-04-11 |D:/nppez_data/unzips/othername_pfile_20050523-20230409_fileheader.csv |      86|
-|2023-04-12 |D:/nppez_data/unzips/othername_pfile_20230403-20230409.csv            |  86.44K|
-|2023-04-12 |D:/nppez_data/unzips/othername_pfile_20230403-20230409_fileheader.csv |      86|
-|2023-04-11 |D:/nppez_data/unzips/pl_pfile_20050523-20230409.csv                   |  65.51M|
-|2023-04-11 |D:/nppez_data/unzips/pl_pfile_20050523-20230409_fileheader.csv        |     578|
-|2023-04-12 |D:/nppez_data/unzips/pl_pfile_20230403-20230409.csv                   | 431.35K|
-|2023-04-12 |D:/nppez_data/unzips/pl_pfile_20230403-20230409_fileheader.csv        |     578|
-|2023-04-11 |D:/nppez_data/unzips/weekly                                           |       0|
+|date       |    size|filename                              |
+|:----------|-------:|:-------------------------------------|
+|2023-04-11 |  96.76M|endpoint_pfile_20050523-20230409.csv  |
+|2023-04-12 | 330.03K|endpoint_pfile_20230403-20230409.csv  |
+|2023-04-11 |   8.66G|npidata_pfile_20050523-20230409.csv   |
+|2023-04-12 |  28.33M|npidata_pfile_20230403-20230409.csv   |
+|2023-04-11 |  25.88M|othername_pfile_20050523-20230409.csv |
+|2023-04-12 |  86.44K|othername_pfile_20230403-20230409.csv |
+|2023-04-11 |  65.51M|pl_pfile_20050523-20230409.csv        |
+|2023-04-12 | 431.35K|pl_pfile_20230403-20230409.csv        |
 
 
 # Clean
@@ -192,11 +180,93 @@ fs::dir_info("D:/nppez_data/unzips/") |>
 ## Weekly Update
 
   Each week, a file will be available for download. This file will contain only the new FOIA-disclosable NPPES provider data since the last weekly or monthly file was generated.
+  
+  - [] main
+    - [] npi
+    - [] entity_type
+    - [] enumeration_date
+    - [] certification_date
+    - [] last_updated
+    - [] npi_deactivation_date
+    - [] npi_reactivation_date
+    - [] is_sole_proprietor
+    - [] is_organization_subpart
+    - [] parent_organization_lbn
+    - [] parent_organization_tin
+    - [] organization_legal_name
+
+
+## Individual Table
 
 ```{r}
-weekly <- clean_weekly_update()
-weekly <- datawizard::data_peek(weekly)
-weekly
+individual <- nppez::clean_weekly() |> 
+  dplyr::select(npi, 
+                entity_type, 
+                prefix_name, 
+                first_name, 
+                middle_name, 
+                last_name, 
+                suffix_name, 
+                gender, 
+                credential) |>
+  dplyr::filter(entity_type == "Individual") |> 
+  dplyr::mutate(entity_type = NULL) |> 
+  janitor::remove_empty()
+individual
+```
+
+## Other Table
+
+```{r}
+other_ind <- nppez::clean_weekly() |> 
+  dplyr::select(npi, entity_type, dplyr::contains("other")) |> 
+  dplyr::filter(!is.na(other_last_name)) |> 
+  dplyr::mutate(entity_type = NULL) |> 
+  janitor::remove_empty()
+
+other_org <- nppez::clean_weekly() |> 
+  dplyr::select(npi, entity_type, dplyr::contains("other")) |> 
+  dplyr::filter(!is.na(organization_other_name)) |> 
+  dplyr::mutate(entity_type = NULL) |> 
+  janitor::remove_empty()
+```
+
+
+## Authorized Official Table
+
+```{r}
+auth_off <- nppez::clean_weekly() |> 
+  dplyr::select(npi, dplyr::starts_with("authoff_")) |> 
+  dplyr::filter(!is.na(authoff_last_name))
+auth_off
+```
+
+
+## Taxonomy Table
+
+```{r}
+tx <- nppez::clean_weekly() |> 
+  nppez::create_taxonomy() |> 
+  datawizard::data_peek()
+tx
+```
+
+
+## Identifiers Table
+
+```{r}
+id <- nppez::clean_weekly() |> 
+  nppez::create_identifiers() |> datawizard::data_peek()
+id
+```
+
+
+## Address Table
+
+```{r}
+add <- nppez::clean_weekly() |> 
+  nppez::create_address() |> 
+  dplyr::bind_rows(nppez::clean_locations())
 ```
 
 
@@ -206,7 +276,6 @@ The FOIA-disclosable data for a health care provider (individual or organization
 
 ```{r}
 deactivation <- clean_deactivation(dir_xlsx = "D:/nppez_data/unzips")
-deactivation <- datawizard::data_peek(deactivation)
 deactivation
 ```
 
@@ -215,12 +284,7 @@ deactivation
   − File contains all Endpoints associated with Type 1 and Type 2 NPIs
 
 ```{r}
-endpoints <- readr::read_csv(
-  "D:/nppez_data/unzips/endpoint_pfile_20050523-20230409.csv", 
-  col_types = "ccc",
-  name_repair = janitor::make_clean_names) |> 
-  dplyr::arrange(npi)
-endpoints <- datawizard::data_peek(endpoints)
+endpoints <- nppez::clean_endpoints()
 endpoints
 ```
 
@@ -235,22 +299,6 @@ othernames <- readr::read_csv(
   name_repair = janitor::make_clean_names) |> 
   dplyr::rename(other_organization_name = provider_other_organization_name,
                 other_organization_type = provider_other_organization_name_type_code)
-othernames <- datawizard::data_peek(othernames)
-othernames
-```
-
-## Monthly Practice Locations
-
-   − File contains all of the non-primary Practice Locations associated with Type 1 and Type 2 NPIs.
-
-```{r}
-locations <- readr::read_csv(
-  "D:/nppez_data/unzips/pl_pfile_20050523-20230409.csv", 
-  #col_types = "ccc",
-  name_repair = janitor::make_clean_names) |> 
-  janitor::remove_empty()
-locations <- datawizard::data_peek(locations)
-locations
 ```
 
 ## Monthly Update
