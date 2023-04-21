@@ -44,28 +44,18 @@ nppez::grab(dir = "C:/<folder-to-save-zip-files-to>")
 | 2023-04-12    | 851.05M | D:/nppez_data/zips/NPPES_Data_Dissemination_April_2023.zip           |
 | 2023-04-12    |   1.78M | D:/nppez_data/zips/NPPES_Deactivated_NPI_Report_041023.zip           |
 
-``` r
-fs::path_ext("D:/nppez_data/zips/NPPES_Data_Dissemination_040323_040923_Weekly.zip")
-#> [1] "zip"
-fs::dir_create("D:/nppez_data/zips/testing")
-fs::dir_ls("D:/nppez_data/zips/testing")
-#> character(0)
-fs::dir_exists("D:/nppez_data/zips/testing")
-#> D:/nppez_data/zips/testing 
-#>                       TRUE
-```
-
 # Peek
 
 ``` r
 nppez::peek(dir = "<path-to-downloaded-zip-files>")
-#> Error: [ENOENT] Failed to search directory '<path-to-downloaded-zip-files>': no such file or directory
 ```
 
 | parent_zip                                        | size_compressed | size_uncompressed |
 |:--------------------------------------------------|----------------:|------------------:|
 | NPPES_Data_Dissemination_040323_040923_Weekly.zip |           2.72M |            29.16M |
 | NPPES_Data_Dissemination_April_2023.zip           |         850.15M |             8.84G |
+
+<br><br>
 
 | parent_zip                              | filename                              | size_compressed | size_uncompressed |
 |:----------------------------------------|:--------------------------------------|----------------:|------------------:|
@@ -77,18 +67,19 @@ nppez::peek(dir = "<path-to-downloaded-zip-files>")
 # Prune
 
 ``` r
-nppez::prune(dir = "D:/nppez_data/zips/")
-#> [1] "othername_pfile_20050523-20230409.csv"
-#> [2] "endpoint_pfile_20050523-20230409.csv" 
-#> [3] "pl_pfile_20050523-20230409.csv"       
-#> [4] "npidata_pfile_20050523-20230409.csv"
+nppez::prune(dir = "<path-to-downloaded-zip-files>")
 ```
+
+    #> [1] "othername_pfile_20050523-20230409.csv"
+    #> [2] "endpoint_pfile_20050523-20230409.csv" 
+    #> [3] "pl_pfile_20050523-20230409.csv"       
+    #> [4] "npidata_pfile_20050523-20230409.csv"
 
 # Dispense
 
 ``` r
-nppez::dispense(zip_dir = "D:/nppez_data/zips/",
-                unzip_dir =  "D:/nppez_data/unzips/")
+nppez::dispense(zip_dir   = "<path-to-downloaded-zip-files>",
+                unzip_dir =  "<path-to-unzip-files-to>")
 ```
 
 | date       |    size | filename                              |
@@ -104,25 +95,105 @@ nppez::dispense(zip_dir = "D:/nppez_data/zips/",
 
 # Clean
 
-## Weekly Update
+1.  Main Table
 
-Each week, a file will be available for download. This file will contain
-only the new FOIA-disclosable NPPES provider data since the last weekly
-or monthly file was generated.
+``` r
+main <- nppez::clean_weekly() |> 
+  dplyr::select(npi, 
+                entity_type, 
+                enumeration_date, 
+                certification_date, 
+                last_updated) |> 
+  janitor::remove_empty() |> 
+  dplyr::mutate(enumeration_age = clock::date_count_between(
+    enumeration_date, 
+    clock::date_today(""), "day"), 
+    .after = enumeration_date)
 
-- \[\] main
-  - \[\] npi
-  - \[\] entity_type
-  - \[\] enumeration_date
-  - \[\] certification_date
-  - \[\] last_updated
-  - \[\] npi_deactivation_date
-  - \[\] npi_reactivation_date
-  - \[\] is_sole_proprietor
-  - \[\] is_organization_subpart
-  - \[\] parent_organization_lbn
-  - \[\] parent_organization_tin
-  - \[\] organization_legal_name
+main |> 
+  dplyr::arrange(dplyr::desc(enumeration_age)) |> 
+  dplyr::mutate(enumeration_duration = difftime(clock::date_today(""), 
+                                                enumeration_date), 
+                .after = enumeration_age) |> 
+  head()
+#> # A tibble: 6 × 7
+#>   npi        entity_type  enumeration_date enumeration_age enumeration_duration
+#>   <chr>      <chr>        <date>                     <int> <drtn>              
+#> 1 1659374676 Individual   2005-05-23                  6542 6542 days           
+#> 2 1811990013 Individual   2005-05-23                  6542 6542 days           
+#> 3 1518960541 Individual   2005-05-23                  6542 6542 days           
+#> 4 1700889656 Organization 2005-05-24                  6541 6541 days           
+#> 5 1184627820 Individual   2005-05-26                  6539 6539 days           
+#> 6 1619970183 Organization 2005-05-27                  6538 6538 days           
+#> # ℹ 2 more variables: certification_date <date>, last_updated <date>
+```
+
+2.  Organization Table
+
+``` r
+organization <- nppez::clean_weekly() |> 
+  dplyr::select(npi, 
+                entity_type, 
+                organization_legal_name, 
+                is_organization_subpart, 
+                parent_organization_lbn) |>
+  dplyr::filter(entity_type == "Organization") |> 
+  dplyr::mutate(entity_type = NULL) |> 
+  janitor::remove_empty()
+
+other_org <- nppez::clean_weekly() |> 
+  dplyr::select(npi, entity_type, dplyr::contains("other")) |> 
+  dplyr::filter(!is.na(organization_other_name)) |> 
+  dplyr::mutate(entity_type = NULL) |> 
+  janitor::remove_empty()
+
+auth_off <- nppez::clean_weekly() |> 
+  dplyr::select(npi, dplyr::starts_with("authoff_")) |> 
+  dplyr::filter(!is.na(authoff_last_name))
+
+othernames <- readr::read_csv(
+  "D:/nppez_data/unzips/othername_pfile_20050523-20230409.csv", 
+  col_types = "ccc",
+  name_repair = janitor::make_clean_names) |> 
+  dplyr::rename(othernames_org_name = provider_other_organization_name,
+                othernames_org_type = provider_other_organization_name_type_code)
+
+organization <- organization |> 
+  dplyr::left_join(other_org) |> 
+  dplyr::left_join(auth_off) |> 
+  dplyr::left_join(othernames) |> 
+  dplyr::mutate(is_organization_subpart = dplyr::case_when(
+    is_organization_subpart == "Y" ~ TRUE,
+    is_organization_subpart == "N" ~ FALSE,
+    .default = NA)) |> 
+  dplyr::select(npi,
+                organization_legal_name,
+                organization_other_name,
+                othernames_org_name,
+                organization_other_type,
+                othernames_org_type,
+                is_organization_subpart,
+                parent_organization_lbn,
+                authoff_last_name:authoff_phone)
+
+organization |> head()
+#> # A tibble: 6 × 16
+#>   npi        organization_legal_name  organization_other_n…¹ othernames_org_name
+#>   <chr>      <chr>                    <chr>                  <chr>              
+#> 1 1164126330 GOLDEN ERA ADHC LLC      <NA>                   Golden Era ADHC    
+#> 2 1558087916 SANCTUARY TREATMENT CEN… <NA>                   <NA>               
+#> 3 1124728852 SANCTUARY TREATMENT CEN… <NA>                   <NA>               
+#> 4 1447748496 PLASTIC & RECONSTRUCTIV… PLASTIC & RECONSTRUCT… PlasticsOne        
+#> 5 1447748496 PLASTIC & RECONSTRUCTIV… PLASTIC & RECONSTRUCT… Plastic & Reconstr…
+#> 6 1720637325 RAD X MOBILE IMAGING LLC RAD X MOBILE IMAGING … Rad X Mobile Imagi…
+#> # ℹ abbreviated name: ¹​organization_other_name
+#> # ℹ 12 more variables: organization_other_type <chr>,
+#> #   othernames_org_type <chr>, is_organization_subpart <lgl>,
+#> #   parent_organization_lbn <chr>, authoff_last_name <chr>,
+#> #   authoff_first_name <chr>, authoff_middle_name <chr>,
+#> #   authoff_prefix_name <chr>, authoff_suffix_name <chr>,
+#> #   authoff_credential <chr>, authoff_position <chr>, authoff_phone <chr>
+```
 
 ## Individual Table
 
@@ -136,103 +207,39 @@ individual <- nppez::clean_weekly() |>
                 last_name, 
                 suffix_name, 
                 gender, 
-                credential) |>
+                credential,
+                is_sole_proprietor) |>
   dplyr::filter(entity_type == "Individual") |> 
   dplyr::mutate(entity_type = NULL) |> 
   janitor::remove_empty()
-individual
-#> # A tibble: 20,225 × 8
-#>    npi        prefix_name first_name middle_name last_name    suffix_name gender
-#>    <chr>      <chr>       <chr>      <chr>       <chr>        <chr>       <chr> 
-#>  1 1063162634 DR.         HUSSAIN    RAZA        ABIDI        <NA>        M     
-#>  2 1891497467 <NA>        ZINAH      <NA>        QADER        <NA>        F     
-#>  3 1720782626 <NA>        KEVIN      <NA>        WU           <NA>        M     
-#>  4 1932804044 <NA>        NICOLAS    <NA>        PASCUAL-LEO… <NA>        M     
-#>  5 1366145740 <NA>        AMEERA     <NA>        MISTRY       <NA>        F     
-#>  6 1407550163 <NA>        ELAINE     ANNA        LIU          <NA>        F     
-#>  7 1487262978 <NA>        MIAH       MELANIE     RAMSEY       <NA>        F     
-#>  8 1255831962 <NA>        SELENA     PATRICIA    WELLS        <NA>        F     
-#>  9 1407025497 <NA>        MATTHEW    BENJAMIN    MAIN         <NA>        M     
-#> 10 1306549282 <NA>        SIMON      <NA>        LUU          <NA>        M     
-#> # ℹ 20,215 more rows
-#> # ℹ 1 more variable: credential <chr>
-```
 
-## Other Table
-
-``` r
 other_ind <- nppez::clean_weekly() |> 
   dplyr::select(npi, entity_type, dplyr::contains("other")) |> 
   dplyr::filter(!is.na(other_last_name)) |> 
   dplyr::mutate(entity_type = NULL) |> 
   janitor::remove_empty()
 
-other_org <- nppez::clean_weekly() |> 
-  dplyr::select(npi, entity_type, dplyr::contains("other")) |> 
-  dplyr::filter(!is.na(organization_other_name)) |> 
-  dplyr::mutate(entity_type = NULL) |> 
-  janitor::remove_empty()
-```
+individual <- individual |> 
+  dplyr::left_join(other_ind) |> 
+  dplyr::mutate(is_sole_proprietor = dplyr::case_when(
+    is_sole_proprietor == "Y" ~ TRUE,
+    is_sole_proprietor == "N" ~ FALSE,
+    .default = NA))
 
-## Authorized Official Table
-
-``` r
-auth_off <- nppez::clean_weekly() |> 
-  dplyr::select(npi, dplyr::starts_with("authoff_")) |> 
-  dplyr::filter(!is.na(authoff_last_name))
-auth_off
-#> # A tibble: 3,989 × 9
-#>    npi        authoff_last_name authoff_first_name authoff_middle_name
-#>    <chr>      <chr>             <chr>              <chr>              
-#>  1 1164126330 GIANG             HANH               <NA>               
-#>  2 1558087916 ZHONG             JUN                <NA>               
-#>  3 1124728852 WANG              QINGCHUAN          <NA>               
-#>  4 1447748496 ZUHLKE            TODD               A.                 
-#>  5 1720637325 DUSENBERRY        ANISSA             <NA>               
-#>  6 1538863667 MANUEL            JAMAICA            LAGUNA             
-#>  7 1023751724 ROMERO MICULESCU  ANA                MARIA              
-#>  8 1477256873 TANYAG            CELINA JANNA MAY   <NA>               
-#>  9 1720515331 WINSTEL           JOHN               <NA>               
-#> 10 1750854345 WINSTEL           JOHN               D                  
-#> # ℹ 3,979 more rows
-#> # ℹ 5 more variables: authoff_prefix_name <chr>, authoff_suffix_name <chr>,
-#> #   authoff_credential <chr>, authoff_position <chr>, authoff_phone <chr>
-```
-
-## Taxonomy Table
-
-``` r
-tx <- nppez::clean_weekly() |> 
-  nppez::create_taxonomy() |> 
-  datawizard::data_peek()
-tx
-#> Data frame with 33094 rows and 6 variables
-#> 
-#> Variable         | Type      | Values                                 
-#> ----------------------------------------------------------------------
-#> npi              | character | 1164126330, 1558087916, 1124728852, ...
-#> taxonomy_code    | character | 261QA0600X, 2084P0800X, 2084P0800X, ...
-#> primary_taxonomy | logical   | TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, ...
-#> taxonomy_group   | character | NA, ...                                
-#> license_no       | character | NA, NA, NA, NA, NA, NA, NA, NA, NA, ...
-#> license_state    | character | NA, NA, NA, NA, NA, NA, NA, NA, NA, ...
-```
-
-## Identifiers Table
-
-``` r
-id <- nppez::clean_weekly() |> 
-  nppez::create_identifiers() |> datawizard::data_peek()
-id
-#> Data frame with 4369 rows and 5 variables
-#> 
-#> Variable   | Type      | Values                                        
-#> -----------------------------------------------------------------------
-#> npi        | character | 1316090236, 1215901574, 1215901574, ...       
-#> identifier | character | 412900800, 0921953, 0748972, 000000087511, ...
-#> id_type    | character | 05, 05, 05, 01, 05, 05, 05, 01, 05, 01, ...   
-#> id_state   | character | MD, OH, OH, IN, IN, IN, IN, IN, NY, NC, ...   
-#> id_issuer  | character | NA, NA, NA, ANTHEM BC/BS, NA, NA, NA, ...
+individual |> head()
+#> # A tibble: 6 × 16
+#>   npi        prefix_name first_name middle_name last_name     suffix_name gender
+#>   <chr>      <chr>       <chr>      <chr>       <chr>         <chr>       <chr> 
+#> 1 1063162634 DR.         HUSSAIN    RAZA        ABIDI         <NA>        M     
+#> 2 1891497467 <NA>        ZINAH      <NA>        QADER         <NA>        F     
+#> 3 1720782626 <NA>        KEVIN      <NA>        WU            <NA>        M     
+#> 4 1932804044 <NA>        NICOLAS    <NA>        PASCUAL-LEONE <NA>        M     
+#> 5 1366145740 <NA>        AMEERA     <NA>        MISTRY        <NA>        F     
+#> 6 1407550163 <NA>        ELAINE     ANNA        LIU           <NA>        F     
+#> # ℹ 9 more variables: credential <chr>, is_sole_proprietor <lgl>,
+#> #   other_last_name <chr>, other_first_name <chr>, other_middle_name <chr>,
+#> #   other_prefix_name <chr>, other_suffix_name <chr>, other_credential <chr>,
+#> #   other_last_name_type <chr>
 ```
 
 ## Address Table
@@ -240,15 +247,235 @@ id
 ``` r
 add <- nppez::clean_weekly() |> 
   nppez::create_address() |> 
-  dplyr::bind_rows(nppez::clean_locations())
+  dplyr::select(-entity_type)
+  #dplyr::bind_rows(nppez::clean_locations())
+
+add |> head()
+#> # A tibble: 6 × 9
+#>   npi        address_type address_street  address_city address_state address_zip
+#>   <chr>      <chr>        <chr>           <chr>        <chr>         <chr>      
+#> 1 1164126330 practice     4 UNION SQ      UNION CITY   CA            945873523  
+#> 2 1558087916 practice     9375 E SHEA BL… SCOTTSDALE   AZ            852606991  
+#> 3 1124728852 practice     9017 S PECOS R… HENDERSON    NV            890746621  
+#> 4 1447748496 practice     16677 LOWELL B… BROOMFIELD   CO            800238053  
+#> 5 1720637325 practice     7409 RALEIGH A… LUBBOCK      TX            794242303  
+#> 6 1063162634 practice     720 W OAK ST S… KISSIMMEE    FL            347414998  
+#> # ℹ 3 more variables: address_country <chr>, address_phone <chr>,
+#> #   address_fax <chr>
+```
+
+``` r
+library(rpolars)
+
+main_pl <- pl$DataFrame(main)
+lazy_main <- main_pl$lazy()
+npi_type <- lazy_main$select("npi", "entity_type")
+
+
+add_pl <- pl$DataFrame(add)
+lazy_add <- add_pl$lazy()
+add_sub <- lazy_add$select("npi", "address_state")
+
+type_add <- npi_type$join(add_sub, on = "npi", how = "left")
+
+type_add$groupby(
+  c("entity_type", "address_state"), 
+  maintain_order = TRUE
+  )$agg(
+    pl$col("npi")$count()
+    )$collect()
+#> polars DataFrame: shape: (140, 3)
+#> ┌──────────────┬───────────────┬─────┐
+#> │ entity_type  ┆ address_state ┆ npi │
+#> │ ---          ┆ ---           ┆ --- │
+#> │ str          ┆ str           ┆ u32 │
+#> ╞══════════════╪═══════════════╪═════╡
+#> │ Organization ┆ CA            ┆ 760 │
+#> │ Organization ┆ AZ            ┆ 234 │
+#> │ Organization ┆ NV            ┆ 113 │
+#> │ Organization ┆ CO            ┆ 174 │
+#> │ ...          ┆ ...           ┆ ... │
+#> │ Individual   ┆ DEVON         ┆ 1   │
+#> │ Individual   ┆ BAGMATI       ┆ 1   │
+#> │ Individual   ┆ ZHEJIANG      ┆ 1   │
+#> │ Individual   ┆ BC            ┆ 1   │
+#> └──────────────┴───────────────┴─────┘
+```
+
+``` r
+x <- type_add$groupby(
+  c("entity_type", "address_state"), 
+  maintain_order = TRUE
+  )$agg(
+    pl$col("npi")$count()
+    )$collect()
+
+x$as_data_frame() |> 
+  dplyr::filter(entity_type == "Individual") |> 
+  dplyr::arrange(dplyr::desc(npi))
+#>    entity_type    address_state  npi
+#> 1   Individual               CA 5205
+#> 2   Individual               TX 3091
+#> 3   Individual               NY 2922
+#> 4   Individual               FL 2880
+#> 5   Individual               OH 1993
+#> 6   Individual               MI 1681
+#> 7   Individual               PA 1354
+#> 8   Individual               IL 1217
+#> 9   Individual               NC 1190
+#> 10  Individual               MD 1046
+#> 11  Individual               MA 1038
+#> 12  Individual               TN 1017
+#> 13  Individual               VA  950
+#> 14  Individual               NJ  910
+#> 15  Individual               GA  909
+#> 16  Individual               IN  835
+#> 17  Individual               WA  798
+#> 18  Individual               WI  773
+#> 19  Individual               CO  684
+#> 20  Individual               OR  657
+#> 21  Individual               MN  643
+#> 22  Individual               AZ  633
+#> 23  Individual               SC  612
+#> 24  Individual               DC  603
+#> 25  Individual               KY  560
+#> 26  Individual               LA  491
+#> 27  Individual               CT  459
+#> 28  Individual               OK  450
+#> 29  Individual               MO  448
+#> 30  Individual               NV  433
+#> 31  Individual               AL  412
+#> 32  Individual               AR  410
+#> 33  Individual               UT  345
+#> 34  Individual               WV  322
+#> 35  Individual               KS  320
+#> 36  Individual               NM  297
+#> 37  Individual               MS  174
+#> 38  Individual               IA  159
+#> 39  Individual               PR  151
+#> 40  Individual               NE  144
+#> 41  Individual               RI  129
+#> 42  Individual               ME  128
+#> 43  Individual               ID  127
+#> 44  Individual               NH  126
+#> 45  Individual               DE  119
+#> 46  Individual               HI  108
+#> 47  Individual               VT   80
+#> 48  Individual               AK   79
+#> 49  Individual               MT   72
+#> 50  Individual               ND   62
+#> 51  Individual               WY   59
+#> 52  Individual               SD   59
+#> 53  Individual               AE   31
+#> 54  Individual               AP    8
+#> 55  Individual               AA    5
+#> 56  Individual               VI    4
+#> 57  Individual               GU    2
+#> 58  Individual               CE    2
+#> 59  Individual          ALREHAB    2
+#> 60  Individual            SINDH    2
+#> 61  Individual               ON    2
+#> 62  Individual            MALMO    2
+#> 63  Individual          ONTARIO    2
+#> 64  Individual BRITISH COLUMBIA    2
+#> 65  Individual      PUERTO RICO    1
+#> 66  Individual             UTAH    1
+#> 67  Individual  RHEINLAND PFALZ    1
+#> 68  Individual       TAMIL NADU    1
+#> 69  Individual  VALLE DEL CAUCA    1
+#> 70  Individual          VICENZA    1
+#> 71  Individual       CO. GALWAY    1
+#> 72  Individual           GALWAY    1
+#> 73  Individual         MENOUFIA    1
+#> 74  Individual           ISRAEL    1
+#> 75  Individual           PUNJAB    1
+#> 76  Individual          ALBERTA    1
+#> 77  Individual            CADIZ    1
+#> 78  Individual           RUSSIA    1
+#> 79  Individual               AB    1
+#> 80  Individual         MICHIGAN    1
+#> 81  Individual          IRELAND    1
+#> 82  Individual            EGYPT    1
+#> 83  Individual            DEVON    1
+#> 84  Individual          BAGMATI    1
+#> 85  Individual         ZHEJIANG    1
+#> 86  Individual               BC    1
+
+x$as_data_frame() |> 
+  dplyr::filter(entity_type == "Organization") |> 
+  dplyr::arrange(dplyr::desc(npi))
+#>     entity_type address_state npi
+#> 1  Organization            TX 785
+#> 2  Organization            FL 761
+#> 3  Organization            CA 760
+#> 4  Organization            NY 487
+#> 5  Organization            PA 276
+#> 6  Organization            OH 272
+#> 7  Organization            TN 259
+#> 8  Organization            IL 259
+#> 9  Organization            GA 247
+#> 10 Organization            NC 241
+#> 11 Organization            AZ 234
+#> 12 Organization            MI 234
+#> 13 Organization            MD 225
+#> 14 Organization            VA 224
+#> 15 Organization            NJ 204
+#> 16 Organization            MN 185
+#> 17 Organization            KY 176
+#> 18 Organization            CO 174
+#> 19 Organization            MA 124
+#> 20 Organization            OR 116
+#> 21 Organization            NV 113
+#> 22 Organization            WI 107
+#> 23 Organization            MO 107
+#> 24 Organization            WA 106
+#> 25 Organization            AL 101
+#> 26 Organization            KS  99
+#> 27 Organization            IN  94
+#> 28 Organization            MS  88
+#> 29 Organization            CT  71
+#> 30 Organization            SC  70
+#> 31 Organization            LA  69
+#> 32 Organization            ID  66
+#> 33 Organization            OK  60
+#> 34 Organization            AR  59
+#> 35 Organization            UT  58
+#> 36 Organization            RI  51
+#> 37 Organization            IA  50
+#> 38 Organization            NE  44
+#> 39 Organization            PR  41
+#> 40 Organization            NM  35
+#> 41 Organization            HI  34
+#> 42 Organization            MT  32
+#> 43 Organization            ME  27
+#> 44 Organization            DE  27
+#> 45 Organization            VT  26
+#> 46 Organization            WY  20
+#> 47 Organization            WV  19
+#> 48 Organization            NH  16
+#> 49 Organization            SD  15
+#> 50 Organization            ND  12
+#> 51 Organization            AK  10
+#> 52 Organization            VI   4
+#> 53 Organization            DC   3
+#> 54 Organization       JALISCO   1
+```
+
+## Taxonomy Table
+
+``` r
+tx <- nppez::clean_weekly() |> 
+  nppez::create_taxonomy()
+```
+
+## Identifiers Table
+
+``` r
+id <- nppez::clean_weekly() |> 
+  nppez::create_identifiers()
 ```
 
 ## Monthly Deactivations
-
-The FOIA-disclosable data for a health care provider (individual or
-organization) who deactivated an NPI will now be disclosed within the
-files. For a deactivated NPI, CMS will only disclose the deactivated NPI
-and the associated date of deactivation within the files.
 
 ``` r
 deactivation <- clean_deactivation(dir_xlsx = "D:/nppez_data/unzips")
@@ -270,8 +497,6 @@ deactivation
 ```
 
 ## Monthly Endpoints
-
-− File contains all Endpoints associated with Type 1 and Type 2 NPIs
 
 ``` r
 endpoints <- nppez::clean_endpoints()
@@ -296,19 +521,6 @@ endpoints
 #> #   other_content_description <chr>, affiliation_address_street <chr>,
 #> #   affiliation_address_city <chr>, affiliation_address_state <chr>,
 #> #   affiliation_address_country <chr>, affiliation_address_postal_code <chr>
-```
-
-## Monthly Other Names
-
-− File contains additional Other Names associated with Type 2 NPIs
-
-``` r
-othernames <- readr::read_csv(
-  "D:/nppez_data/unzips/othername_pfile_20050523-20230409.csv", 
-  col_types = "ccc",
-  name_repair = janitor::make_clean_names) |> 
-  dplyr::rename(other_organization_name = provider_other_organization_name,
-                other_organization_type = provider_other_organization_name_type_code)
 ```
 
 ## Monthly Update
