@@ -1,68 +1,87 @@
-#' Clean the Monthly NPPES NPI Deactivation File
-#' @param dir_xlsx path to directory that the Monthly Deactivation Excel (.xlsx) file resides in (do not include file name at the end)
+#' Monthly NPPES NPI Deactivation File
+#'
+#' @param dir `<chr>` path to directory containing file
+#'
 #' @return tibble of cleaned data
-#' @examples
-#' \dontrun{
-#' clean_deactivation("D:/<directory>")
-#' }
+#'
+#' @examplesIf interactive()
+#' clean_deactivation("D:/<directory name>")
+#'
 #' @autoglobal
 #' @export
-clean_deactivation <- function(dir_xlsx) {
+clean_deactivation <- function(dir) {
 
-  path <- list.files(dir_xlsx,
-                     pattern = "[.]xlsx$",
-                     full.names = TRUE)
+  path <- fs::dir_ls(dir, glob = "*.xlsx")
 
-  cols <- readxl::read_xlsx(path = path, range = "A1:B2",
-                            .name_repair = janitor::make_clean_names) |>
+  cols <- readxl::read_xlsx(
+    path  = path,
+    range = "A1:B2") |>
     unlist(use.names = FALSE) |>
     janitor::make_clean_names() |>
     stringr::str_remove("nppes_")
 
-  results <- readxl::read_xlsx(path = path, sheet = 1,
-                               skip = 2, trim_ws = TRUE,
-                               .name_repair = janitor::make_clean_names,
-                               col_names = cols, col_types = c("text")) |>
-    dplyr::mutate(deactivation_date = clock::date_parse(deactivation_date,
-                                                        format = "%m/%d/%Y"))
+  results <- readxl::read_xlsx(
+    path         = path,
+    sheet        = 1,
+    skip         = 2,
+    trim_ws      = TRUE,
+    .name_repair = janitor::make_clean_names,
+    col_names    = cols,
+    col_types    = c("text")
+    ) |>
+    dplyr::mutate(
+      deactivation_date = clock::date_parse(
+        deactivation_date,
+        format = "%m/%d/%Y")
+      )
 
-  results$release_date <- stringr::str_extract(path, "\\d{8}") |>
+  results$release_date <- stringr::str_extract(
+    path,
+    "\\d{8}"
+    ) |>
     clock::date_parse(format = "%Y%m%d")
 
   return(results)
-
 }
 
-#' Clean the Monthly NPPES NPI Endpoints File
-#' @param csv full path to Monthly NPPES Endpoints file (.csv)
+#' Monthly NPPES NPI Endpoints File
+#'
+#' @param dir `<chr>` path to directory containing file
+#'
 #' @return tibble of cleaned data
-#' @examples
-#' \dontrun{
+#'
+#' @examplesIf interactive()
 #' clean_endpoints("D:/<directory>/<filename>.csv")
-#' }
+#'
 #' @autoglobal
 #' @export
-clean_endpoints <- function(csv = NULL) {
+clean_endpoints <- function(dir) {
 
-  endpoints <- readr::read_csv(
-    "D:/nppez_data/unzips/endpoint_pfile_20050523-20230409.csv",
-    col_types = stringr::str_flatten(rep("c", 19)),
-    name_repair = janitor::make_clean_names) |>
-    dplyr::mutate(affiliation = dplyr::case_when(affiliation == "Y" ~ TRUE,
-                                                 affiliation == "N" ~ FALSE,
-                                                 .default = NA),
-                  endpoint_type = NULL,
-                  use_code = NULL,
-                  content_description = NULL) |>
-    tidyr::unite("affiliation_address_street",
-                 affiliation_address_line_one:affiliation_address_line_two,
-                 remove = TRUE, na.rm = TRUE)
+  path <- "D:/nppez_data/unzips/endpoint_pfile_20050523-20230409.csv"
 
-  return(endpoints)
-
+  readr::read_csv(
+    path,
+    col_types     = stringr::str_flatten(rep("c", 19)),
+    name_repair   = janitor::make_clean_names) |>
+    dplyr::mutate(
+      affiliation = dplyr::case_when(
+        affiliation == "Y" ~ TRUE,
+        affiliation == "N" ~ FALSE,
+        .default = NA
+        ),
+      endpoint_type       = NULL,
+      use_code            = NULL,
+      content_description = NULL
+      ) |>
+    tidyr::unite(
+      "affiliation_address_street",
+      affiliation_address_line_one:affiliation_address_line_two,
+      remove = TRUE,
+      na.rm  = TRUE
+      )
 }
 
-#' Clean the Monthly NPPES NPI Secondary Practice Locations File
+#' Monthly NPPES NPI Secondary Practice Locations File
 #' @param csv full path to Monthly NPPES Secondary Practice Locations file (.csv)
 #' @return tibble of cleaned data
 #' @examples

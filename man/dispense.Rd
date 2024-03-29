@@ -20,7 +20,7 @@ invisible
 Unzip NPPES ZIPs
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 nppez::dispense()
-}
+\dontshow{\}) # examplesIf}
 }

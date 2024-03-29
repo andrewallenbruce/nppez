@@ -18,18 +18,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-# {nppez}
+# nppez
+
+> Tidy NPPES NPI Registry Data Files
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 ## Installation
 
-You can install the development version of {nppez} from [GitHub](https://github.com/) with:
+You can install **nppez** from [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("andrewallenbruce/nppez")
+# install.packages("pak")
+pak::pak("andrewallenbruce/northstar")
 ```
 
 ```{r}
@@ -172,11 +174,7 @@ fs::dir_info("D:/nppez_data/unzips/") |>
 |2023-04-12 | 431.35K|pl_pfile_20230403-20230409.csv        |
 
 
-# Clean
-
-  1. Main Table
-
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 main <- nppez::clean_weekly() |> 
   dplyr::select(npi, 
                 entity_type, 
@@ -197,9 +195,7 @@ main |>
   head()
 ```
 
-  2. Organization Table
-
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 organization <- nppez::clean_weekly() |> 
   dplyr::select(npi, 
                 entity_type, 
@@ -249,9 +245,7 @@ organization |> head()
 ```
 
 
-## Individual Table
-
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 individual <- nppez::clean_weekly() |> 
   dplyr::select(npi, 
                 entity_type, 
@@ -283,9 +277,7 @@ individual <- individual |>
 individual |> head()
 ```
 
-## Address Table
-
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 add <- nppez::clean_weekly() |> 
   nppez::create_address() |> 
   dplyr::select(-entity_type)
@@ -294,7 +286,7 @@ add <- nppez::clean_weekly() |>
 add |> head()
 ```
 
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 library(rpolars)
 
 main_pl <- pl$DataFrame(main)
@@ -317,7 +309,7 @@ type_add$groupby(
 ```
 
 
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 x <- type_add$groupby(
   c("entity_type", "address_state"), 
   maintain_order = TRUE
@@ -334,40 +326,22 @@ x$as_data_frame() |>
   dplyr::arrange(dplyr::desc(npi))
 ```
 
-
-## Taxonomy Table
-
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 tx <- nppez::clean_weekly() |> 
   nppez::create_taxonomy()
 ```
 
-
-## Identifiers Table
-
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 id <- nppez::clean_weekly() |> 
   nppez::create_identifiers()
 ```
 
-
-
-
-
-## Monthly Deactivations
-
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 deactivation <- clean_deactivation(dir_xlsx = "D:/nppez_data/unzips")
 deactivation
 ```
 
-## Monthly Endpoints
-
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 endpoints <- nppez::clean_endpoints()
 endpoints
 ```
-
-
-
-## Monthly Update

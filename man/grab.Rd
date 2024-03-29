@@ -16,7 +16,7 @@ tibble
 Download NPPES ZIP files to a local directory
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 nppez::grab(dir = tempdir())
-}
+\dontshow{\}) # examplesIf}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean.R
 \name{clean_locations}
 \alias{clean_locations}
-\title{Clean the Monthly NPPES NPI Secondary Practice Locations File}
+\title{Monthly NPPES NPI Secondary Practice Locations File}
 \usage{
 clean_locations(csv = NULL)
 }
@@ -13,7 +13,7 @@ clean_locations(csv = NULL)
 tibble of cleaned data
 }
 \description{
-Clean the Monthly NPPES NPI Secondary Practice Locations File
+Monthly NPPES NPI Secondary Practice Locations File
 }
 \examples{
 \dontrun{

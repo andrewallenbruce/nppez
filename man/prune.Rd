@@ -16,7 +16,7 @@ tibble
 Select files to unzip inside the downloaded NPPES ZIPs before unzipping
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 nppez::prune()
-}
+\dontshow{\}) # examplesIf}
 }

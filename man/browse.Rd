@@ -14,4 +14,5 @@ Retrieve info about the most recent NPPES Data Dissemination release
 }
 \examples{
 nppez::browse()
+
 }

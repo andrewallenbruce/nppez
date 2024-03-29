@@ -2,21 +2,21 @@
 % Please edit documentation in R/clean.R
 \name{clean_deactivation}
 \alias{clean_deactivation}
-\title{Clean the Monthly NPPES NPI Deactivation File}
+\title{Monthly NPPES NPI Deactivation File}
 \usage{
-clean_deactivation(dir_xlsx)
+clean_deactivation(dir)
 }
 \arguments{
-\item{dir_xlsx}{path to directory that the Monthly Deactivation Excel (.xlsx) file resides in (do not include file name at the end)}
+\item{dir}{\verb{<chr>} path to directory containing file}
 }
 \value{
 tibble of cleaned data
 }
 \description{
-Clean the Monthly NPPES NPI Deactivation File
+Monthly NPPES NPI Deactivation File
 }
 \examples{
-\dontrun{
-clean_deactivation("D:/<directory>")
-}
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+clean_deactivation("D:/<directory name>")
+\dontshow{\}) # examplesIf}
 }

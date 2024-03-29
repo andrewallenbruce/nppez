@@ -2,21 +2,21 @@
 % Please edit documentation in R/clean.R
 \name{clean_endpoints}
 \alias{clean_endpoints}
-\title{Clean the Monthly NPPES NPI Endpoints File}
+\title{Monthly NPPES NPI Endpoints File}
 \usage{
-clean_endpoints(csv = NULL)
+clean_endpoints(dir)
 }
 \arguments{
-\item{csv}{full path to Monthly NPPES Endpoints file (.csv)}
+\item{dir}{\verb{<chr>} path to directory containing file}
 }
 \value{
 tibble of cleaned data
 }
 \description{
-Clean the Monthly NPPES NPI Endpoints File
+Monthly NPPES NPI Endpoints File
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 clean_endpoints("D:/<directory>/<filename>.csv")
-}
+\dontshow{\}) # examplesIf}
 }

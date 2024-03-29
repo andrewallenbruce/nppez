@@ -1,39 +1,44 @@
 Package: nppez
-Title: What the Package Does (One Line, Title Case)
+Title: Tidy NPPES NPI Registry
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Andrew", "Bruce", , "andrewbruce.himni@gmail.com", role = c("aut", "cre", "cph"))
+Maintainer: Andrew Bruce <andrewbruce.himni@gmail.com>
+Description: Provides a tidy interface to the National Plan and Provider
+    Enumeration System (NPPES) National Provider Identifier (NPI)
+    Registry, a database of all health care providers who have been
+    assigned an NPI. Includes functions to download and parse the NPI
+    Registry data, perform updates according to the NPPES data release
+    schedule and prepare it for storage.
 License: CC BY 4.0
+URL: https://github.com/andrewallenbruce/nppez
+BugReports: https://github.com/andrewallenbruce/nppez/issues
+Depends: 
+    R (>= 4.1.0)
 Imports: 
     clock,
     curl,
     dplyr,
     fs,
-    purrr,
     janitor,
+    purrr,
     readr,
     readxl,
-    vctrs,
     rlang,
     rvest,
     strex,
     stringr,
+    styler,
     tibble,
     tidyr,
+    vctrs,
     zip
-Encoding: UTF-8
-Roxygen: list(
-    markdown = TRUE,
-    roclets = c("collate", "namespace", "rd", "roxyglobals::global_roclet"))
-RoxygenNote: 7.2.3
-URL: https://github.com/andrewallenbruce/nppez
-BugReports: https://github.com/andrewallenbruce/nppez/issues
 Suggests: 
     roxyglobals (>= 0.2.1)
 Remotes: 
     anthonynorth/roxyglobals
-Depends: 
-    R (>= 2.10)
+Encoding: UTF-8
 LazyData: true
+Roxygen: list( markdown = TRUE, roclets = c("collate", "namespace", "rd",
+    "roxyglobals::global_roclet"))
+RoxygenNote: 7.3.1
