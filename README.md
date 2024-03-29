@@ -8,7 +8,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-## Installation
+## :package: Installation
 
 You can install **nppez** from [GitHub](https://github.com/) with:
 
@@ -17,29 +17,30 @@ You can install **nppez** from [GitHub](https://github.com/) with:
 pak::pak("andrewallenbruce/northstar")
 ```
 
+## :beginner: Usage
+
 ``` r
 library(nppez)
 ```
 
-# Ask
+### Ask
+
+List the most recent NPPES Data Dissemination releases
 
 ``` r
 nppez::ask()
+#> Error in clock::date_parse(stringr::str_extract(name, months_regex()), : could not find function "%>%"
 ```
 
-| release_date | file_age | filesize | filename                                          |
-|:-------------|---------:|---------:|:--------------------------------------------------|
-| 2023-04-10   |        6 |  851.05M | NPPES_Data_Dissemination_April_2023.zip           |
-| 2023-04-10   |        6 |    1.78M | NPPES_Deactivated_NPI_Report_041023.zip           |
-| 2023-04-03   |       13 |    3.62M | NPPES_Data_Dissemination_040323_040923_Weekly.zip |
+## Grab
 
-# Grab
+Download NPPES ZIP files to a local directory
 
 ``` r
 nppez::grab(dir = "C:/<folder-to-save-zip-files-to>")
 ```
 
-| download_date |    size | filename                                                             |
+| download_date |    size | file                                                                 |
 |:--------------|--------:|:---------------------------------------------------------------------|
 | 2023-04-12    |   3.62M | D:/nppez_data/zips/NPPES_Data_Dissemination_040323_040923_Weekly.zip |
 | 2023-04-12    | 851.05M | D:/nppez_data/zips/NPPES_Data_Dissemination_April_2023.zip           |
@@ -71,16 +72,11 @@ nppez::peek(dir = "<path-to-downloaded-zip-files>")
 nppez::prune(dir = "<path-to-downloaded-zip-files>")
 ```
 
-    #> [1] "othername_pfile_20050523-20230409.csv"
-    #> [2] "endpoint_pfile_20050523-20230409.csv" 
-    #> [3] "pl_pfile_20050523-20230409.csv"       
-    #> [4] "npidata_pfile_20050523-20230409.csv"
-
 # Dispense
 
 ``` r
-nppez::dispense(zip_dir   = "<path-to-downloaded-zip-files>",
-                unzip_dir =  "<path-to-unzip-files-to>")
+nppez::dispense(from = "<path-to-downloaded-zip-files>",
+                to = "<path-to-unzip-files-to>")
 ```
 
 | date       |    size | filename                              |
@@ -93,3 +89,18 @@ nppez::dispense(zip_dir   = "<path-to-downloaded-zip-files>",
 | 2023-04-12 |  86.44K | othername_pfile_20230403-20230409.csv |
 | 2023-04-11 |  65.51M | pl_pfile_20050523-20230409.csv        |
 | 2023-04-12 | 431.35K | pl_pfile_20230403-20230409.csv        |
+
+------------------------------------------------------------------------
+
+## :balance_scale: Code of Conduct
+
+Please note that the `nppez` project is released with a [Contributor
+Code of
+Conduct](https://andrewallenbruce.github.io/northstar/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
+
+## :classical_building: Governance
+
+This project is primarily maintained by [Andrew
+Bruce](https://github.com/andrewallenbruce). Other authors may
+occasionally assist with some of these duties.

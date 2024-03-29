@@ -2,8 +2,8 @@ Package: nppez
 Title: Tidy NPPES NPI Registry
 Version: 0.0.0.9000
 Authors@R: 
-    person("Andrew", "Bruce", , "andrewbruce.himni@gmail.com", role = c("aut", "cre", "cph"))
-Maintainer: Andrew Bruce <andrewbruce.himni@gmail.com>
+    person("Andrew", "Bruce", , "andrew.bruce@northstarrevenueintegrity.com", role = c("aut", "cre", "cph"))
+Maintainer: Andrew Bruce <andrew.bruce@northstarrevenueintegrity.com>
 Description: Provides a tidy interface to the National Plan and Provider
     Enumeration System (NPPES) National Provider Identifier (NPI)
     Registry, a database of all health care providers who have been
@@ -11,7 +11,7 @@ Description: Provides a tidy interface to the National Plan and Provider
     Registry data, perform updates according to the NPPES data release
     schedule and prepare it for storage.
 License: CC BY 4.0
-URL: https://github.com/andrewallenbruce/nppez
+URL: https://github.com/andrewallenbruce/nppez, https://andrewallenbruce.github.io/nppez/
 BugReports: https://github.com/andrewallenbruce/nppez/issues
 Depends: 
     R (>= 4.1.0)
@@ -21,6 +21,7 @@ Imports:
     dplyr,
     fs,
     janitor,
+    magrittr,
     purrr,
     readr,
     readxl,
@@ -34,11 +35,13 @@ Imports:
     vctrs,
     zip
 Suggests: 
-    roxyglobals (>= 0.2.1)
-Remotes: 
-    anthonynorth/roxyglobals
+    roxyglobals,
+    testthat (>= 3.0.0)
 Encoding: UTF-8
 LazyData: true
-Roxygen: list( markdown = TRUE, roclets = c("collate", "namespace", "rd",
+Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
     "roxyglobals::global_roclet"))
 RoxygenNote: 7.3.1
+Config/testthat/edition: 3
+Config/roxyglobals/filename: globals.R
+Config/roxyglobals/unique: FALSE

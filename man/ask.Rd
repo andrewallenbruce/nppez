@@ -2,12 +2,12 @@
 % Please edit documentation in R/browse.R
 \name{ask}
 \alias{ask}
-\title{Retrieve info about the most recent NPPES Data Dissemination release}
+\title{List the most recent NPPES Data Dissemination releases}
 \usage{
 ask(save = FALSE, dir = NULL)
 }
 \arguments{
-\item{save}{write to csv?; default is FALSE}
+\item{save}{write to csv; default is \code{FALSE}}
 
 \item{dir}{directory to save to}
 }
@@ -15,9 +15,10 @@ ask(save = FALSE, dir = NULL)
 tibble with
 }
 \description{
-Retrieve info about the most recent NPPES Data Dissemination release
+List the most recent NPPES Data Dissemination releases
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 nppez::ask()
-
+\dontshow{\}) # examplesIf}
 }

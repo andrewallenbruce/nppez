@@ -1,5 +1,13 @@
 ^nppez\.Rproj$
 ^\.Rproj\.user$
-^LICENSE\.md$
 ^README\.Rmd$
+^LICENSE\.md$
 ^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^vignettes/articles$
+^CODE_OF_CONDUCT\.md$
+^codecov\.yml$
+^man-roxygen$
