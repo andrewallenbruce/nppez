@@ -4,10 +4,10 @@
 \alias{peek}
 \title{Peek inside the downloaded NPPES ZIPs before unzipping}
 \usage{
-peek(dir)
+peek(path)
 }
 \arguments{
-\item{dir}{path to directory of ZIPs}
+\item{path}{\verb{<chr>} path to download ZIPs to; default is \code{fs::path_wd()}}
 }
 \value{
 tibble

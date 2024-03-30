@@ -4,14 +4,12 @@ utils::globalVariables(c(
   "name", # <ask>
   ".", # <ask>
   "date_wk1", # <ask>
-  "path", # <peek>
-  "zip", # <peek>
   "compressed_size", # <peek>
   "uncompressed_size", # <peek>
-  "parent_zip", # <peek>
+  "zipfile", # <peek>
   "filename", # <peek>
-  "size_compressed", # <peek>
-  "size_uncompressed", # <peek>
+  "compressed", # <peek>
+  "uncompressed", # <peek>
   "path", # <prune>
   "zip", # <prune>
   "parent_zip", # <prune>

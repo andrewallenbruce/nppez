@@ -21,6 +21,9 @@ pak::pak("andrewallenbruce/northstar")
 
 ``` r
 library(nppez)
+library(fs)
+
+test <- path(path_wd(), "inst/tmp")
 ```
 
 ### Ask
@@ -28,17 +31,15 @@ library(nppez)
 List the most recent NPPES Data Dissemination releases
 
 ``` r
-x <- nppez::ask()
-#> Download Time: 0.34 sec elapsed
+x <- nppez::ask(
+  save = TRUE,
+  path = test
+)
+#> Download Time: 0.55 sec elapsed
+#> Error in data.table::fwrite(obj, fs::path(path, fs::path_ext_set(obj[[1]][[1]], : No such file or directory: 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_March_2024.csv'. Unable to create new file for writing (it does not exist already). Do you have permission to write here, is there space on the disk and does the path exist?
+
 x
-#> # A tibble: 5 × 4
-#>   file                                              url       date          size
-#>   <chr>                                             <chr>     <date>     <fs::b>
-#> 1 NPPES_Data_Dissemination_March_2024.zip           https://… 2024-03-11 935.96M
-#> 2 NPPES_Deactivated_NPI_Report_031124.zip           https://… 2024-03-11   1.96M
-#> 3 NPPES_Data_Dissemination_030424_031024_Weekly.zip https://… 2024-03-04   3.83M
-#> 4 NPPES_Data_Dissemination_031124_031724_Weekly.zip https://… 2024-03-11    3.8M
-#> 5 NPPES_Data_Dissemination_031824_032424_Weekly.zip https://… 2024-03-18   4.31M
+#> Error in eval(expr, envir, enclos): object 'x' not found
 ```
 
 ### Grab
@@ -46,25 +47,27 @@ x
 Download NPPES ZIP files to a local directory
 
 ``` r
-nppez::grab(x, files = "NPPES_Deactivated_NPI_Report_031124.zip")
-#> # A tibble: 1 × 10
-#>   success status_code resumefrom url    destfile error type  modified           
-#>   <lgl>         <int>      <dbl> <chr>  <chr>    <chr> <chr> <dttm>             
-#> 1 TRUE            200          0 https… "C:\\Us… <NA>  appl… 2024-03-11 00:01:43
-#> # ℹ 2 more variables: time <dbl>, headers <list>
-```
+y <- nppez::grab(
+  obj   = x, 
+  files = "NPPES_Data_Dissemination_030424_031024_Weekly.zip",
+  path  = test
+  )
+#> Error in eval(expr, envir, enclos): object 'x' not found
 
-| download_date |    size | file                                                                 |
-|:--------------|--------:|:---------------------------------------------------------------------|
-| 2023-04-12    |   3.62M | D:/nppez_data/zips/NPPES_Data_Dissemination_040323_040923_Weekly.zip |
-| 2023-04-12    | 851.05M | D:/nppez_data/zips/NPPES_Data_Dissemination_April_2023.zip           |
-| 2023-04-12    |   1.78M | D:/nppez_data/zips/NPPES_Deactivated_NPI_Report_041023.zip           |
+y
+#> Error in eval(expr, envir, enclos): object 'y' not found
+```
 
 ### Peek
 
 ``` r
-nppez::peek(dir = "<path-to-downloaded-zip-files>")
+nppez::peek(path = test)
+#> Error: [ENOENT] Failed to search directory 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp': no such file or directory
 ```
+
+    #> Error: [ENOENT] Failed to search directory 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp': no such file or directory
+
+<br><br>
 
 | parent_zip                                        | size_compressed | size_uncompressed |
 |:--------------------------------------------------|----------------:|------------------:|

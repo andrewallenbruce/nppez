@@ -7,7 +7,7 @@
 grab(obj, files = NULL, path = fs::path_wd())
 }
 \arguments{
-\item{obj}{\verb{<tbl_df>} object of class \code{ask}, returned from \code{nppez::ask()}}
+\item{obj}{\verb{<tbl_df>} object of class \code{nppez::ask}, returned from \code{nppez::ask()}}
 
 \item{files}{\verb{<chr>} vector of files to download from ZIPs; default behavior is to download all files}
 

@@ -42,7 +42,7 @@ ask <- function(save = FALSE,
   #      this file contains all Endpoints associated
   #      with Type 1 and Type 2 NPIs."
 
-  results <- dplyr::tibble(
+  obj <- dplyr::tibble(
     name  = names[4:8],
     file = substr(links[4:8], 3, 50) |>
       stringr::str_replace(".zi$", ".zip"),
@@ -59,24 +59,24 @@ ask <- function(save = FALSE,
     ) |>
     dplyr::select(-date_wk1, -name)
 
-  class(results) <- c("ask", class(results))
+  class(obj) <- c("nppez::ask", class(obj))
 
   if (save) {
     data.table::fwrite(
-      results,
+      obj,
       fs::path(path,
                fs::path_ext_set(
-                 results[[1]][[1]],
+                 obj[[1]][[1]],
                  ".csv"
                  )
                )
       )
   }
-  return(results)
+  return(obj)
 }
 
 #' Download NPPES ZIP files to a local directory
-#' @param obj `<tbl_df>` object of class `ask`, returned from `nppez::ask()`
+#' @param obj `<tbl_df>` object of class `nppez::ask`, returned from `nppez::ask()`
 #' @param files `<chr>` vector of files to download from ZIPs; default behavior is to download all files
 #' @param path `<chr>` path to download ZIPs to; default is `fs::path_wd()`
 #'
@@ -92,7 +92,7 @@ grab <- function(obj,
                  files = NULL,
                  path = fs::path_wd()) {
 
-  stopifnot("`obj` must be of class 'ask'" = inherits(obj, "ask"))
+  stopifnot("`obj` must be of class 'ask'" = inherits(obj, "nppez::ask"))
 
   if (!is.null(files)) {
 
@@ -100,20 +100,39 @@ grab <- function(obj,
 
     obj <- vctrs::vec_slice(obj, vctrs::vec_in(obj$file, files))
 
-    }
+  }
 
-  curl::multi_download(
+  class(obj) <- c("nppez::grab", class(obj))
+
+  log <- curl::multi_download(
     urls = obj$url,
     destfiles = fs::path(
       path,
       basename(obj$url)
       )
     )
+
+  class(log) <- c("nppez::log", class(log))
+
+  data.table::fwrite(
+    log,
+    fs::path(
+      path,
+      fs::path_ext_set(
+        stringr::str_c(
+          "NPPES_Download_Log_",
+          clock::date_today("")
+          ),
+        ".csv"
+        )
+      )
+    )
+  return(fs::dir_tree(path))
 }
 
 #' Peek inside the downloaded NPPES ZIPs before unzipping
 #'
-#' @param dir path to directory of ZIPs
+#' @param path `<chr>` path to download ZIPs to; default is `fs::path_wd()`
 #'
 #' @return tibble
 #'
@@ -122,40 +141,28 @@ grab <- function(obj,
 #'
 #' @autoglobal
 #' @export
-peek <- function(dir) {
+peek <- function(path) {
 
-  fs::dir_info(dir) |>
+  # stopifnot("`obj` must be of class 'grab'" = inherits(obj, "nppez::grab"))
+
+  dr <- fs::dir_info(fs::path(path)) |>
     dplyr::select(path) |>
-    dplyr::mutate(
-      zip = stringr::str_ends(
-        path,
-        ".zip"
-        )
-      ) |>
-    dplyr::filter(
-      zip == TRUE
-      ) |>
-    dplyr::mutate(
-      zip = NULL
-      ) |>
+    dplyr::filter(stringr::str_detect(path, ".zip")) |>
     tibble::deframe() |>
     rlang::set_names(basename) |>
-    purrr::map(
-      zip::zip_list
-      ) |>
-    purrr::list_rbind(
-      names_to = "parent_zip"
-      ) |>
-    dplyr::mutate(
-      size_compressed = fs::fs_bytes(compressed_size),
-      size_uncompressed = fs::fs_bytes(uncompressed_size)
-      ) |>
-    dplyr::select(
-      parent_zip,
-      filename,
-      size_compressed,
-      size_uncompressed
-      )
+    purrr::map(zip::zip_list) |>
+    purrr::list_rbind(names_to = "zipfile") |>
+    dplyr::mutate(compressed = fs::fs_bytes(compressed_size),
+                  uncompressed = fs::fs_bytes(uncompressed_size)) |>
+    dplyr::select(zipfile,
+                  filename,
+                  compressed,
+                  uncompressed) |>
+    dplyr::tibble()
+
+  class(dr) <- c("nppez::peek", class(dr))
+
+    dr |> split(dr$zipfile)
   }
 
 #' Select files to unzip inside the downloaded NPPES ZIPs before unzipping
@@ -256,115 +263,12 @@ dispense <- function(zip_dir,
       )
 }
 
-# browse <- function() {
-#
-#   url  <- "https://download.cms.gov/nppes/NPI_Files.html"
-#   html <- rvest::read_html(url)
-#
-#   names <- html |>
-#     rvest::html_elements("li") |>
-#     rvest::html_text2()
-#
-#   links <- html |>
-#     rvest::html_elements("a") |>
-#     rvest::html_attr("href")
-#
-#
-#   df <- dplyr::tribble(
-#     ~full,    ~links,
-#     names[4], links[5],
-#     names[5], links[6],
-#     names[6], links[7])
-#
-#   prefix       <- "https://download.cms.gov/nppes"
-#   months_regex <- single_line_string("(Jan(?:uary)?|Feb(?:ruary)?|
-#                   Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|
-#                   Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|
-#                   Dec(?:ember)?)\\s+(\\d{1,2})\\,\\s+(\\d{4})")
-#
-#   results <- df |>
-#     dplyr::mutate(
-#       date1 = stringr::str_extract(
-#         full,
-#         months_regex
-#       ),
-#       date1 = clock::date_parse(
-#         date1,
-#         format = "%B %d, %Y"
-#       ),
-#       date2 = stringr::str_extract(
-#         full,
-#         "\\d{6}"
-#       ),
-#       date2 = clock::date_parse(
-#         date2,
-#         format = "%m%d%y"
-#       ),
-#       name = stringr::str_extract(
-#         full,
-#         "(NPPES Data Dissemination)"
-#       ),
-#       type = stringr::str_extract(
-#         full,
-#         "(Monthly Deactivation Update|Weekly Update)"
-#       ),
-#       size = strex::str_after_last(
-#         full,
-#         "[(]"
-#       ),
-#       size = stringr::str_remove_all(
-#         size,
-#         "[)]"
-#       ),
-#       size = stringr::str_remove_all(
-#         size,
-#         "[,]"
-#       ),
-#       size = fs::fs_bytes(size),
-#       zip_url = stringr::str_replace(
-#         links,
-#         ".",
-#         prefix
-#       ),
-#       links = NULL,
-#       full = NULL
-#     ) |>
-#     tidyr::unite(
-#       "file",
-#       name:type,
-#       remove = TRUE,
-#       sep = " ",
-#       na.rm = TRUE
-#     ) |>
-#     tidyr::unite(
-#       "date",
-#       date1:date2,
-#       remove = TRUE,
-#       sep = "",
-#       na.rm = TRUE
-#     ) |>
-#     dplyr::mutate(
-#       date = clock::date_parse(date),
-#       current_date = clock::date_today("")
-#     ) |>
-#     dplyr::rename(
-#       release_date = date,
-#       file_size = size
-#     ) |>
 #     dplyr::mutate(
 #       file_age = clock::date_count_between(
 #         release_date,
 #         current_date,
 #         "day"
-#       ),
-#       current_date = NULL
-#     ) |>
-#     dplyr::relocate(
-#       file_age,
-#       .after = release_date
-#     )
-#   return(results)
-# }
+#       )
 
 
 
