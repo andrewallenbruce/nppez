@@ -41,6 +41,7 @@ library(nppez)
 library(fs)
 
 test <- path(path_wd(), "inst/tmp")
+dir_create(test)
 ```
 
 ### Ask

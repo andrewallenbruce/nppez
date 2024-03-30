@@ -24,6 +24,7 @@ library(nppez)
 library(fs)
 
 test <- path(path_wd(), "inst/tmp")
+dir_create(test)
 ```
 
 ### Ask
@@ -35,11 +36,17 @@ x <- nppez::ask(
   save = TRUE,
   path = test
 )
-#> Download Time: 0.55 sec elapsed
-#> Error in data.table::fwrite(obj, fs::path(path, fs::path_ext_set(obj[[1]][[1]], : No such file or directory: 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_March_2024.csv'. Unable to create new file for writing (it does not exist already). Do you have permission to write here, is there space on the disk and does the path exist?
+#> Download Time: 0.33 sec elapsed
 
 x
-#> Error in eval(expr, envir, enclos): object 'x' not found
+#> # A tibble: 5 × 4
+#>   file                                              url       date          size
+#>   <chr>                                             <chr>     <date>     <fs::b>
+#> 1 NPPES_Data_Dissemination_March_2024.zip           https://… 2024-03-11 935.96M
+#> 2 NPPES_Deactivated_NPI_Report_031124.zip           https://… 2024-03-11   1.96M
+#> 3 NPPES_Data_Dissemination_030424_031024_Weekly.zip https://… 2024-03-04   3.83M
+#> 4 NPPES_Data_Dissemination_031124_031724_Weekly.zip https://… 2024-03-11    3.8M
+#> 5 NPPES_Data_Dissemination_031824_032424_Weekly.zip https://… 2024-03-18   4.31M
 ```
 
 ### Grab
@@ -52,20 +59,36 @@ y <- nppez::grab(
   files = "NPPES_Data_Dissemination_030424_031024_Weekly.zip",
   path  = test
   )
-#> Error in eval(expr, envir, enclos): object 'x' not found
+#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp
+#> ├── NPPES_Data_Dissemination_030424_031024_Weekly.zip
+#> ├── NPPES_Data_Dissemination_March_2024.csv
+#> └── NPPES_Download_Log_2024-03-30.csv
 
 y
-#> Error in eval(expr, envir, enclos): object 'y' not found
+#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_030424_031024_Weekly.zip
+#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_March_2024.csv
+#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Download_Log_2024-03-30.csv
 ```
 
 ### Peek
 
 ``` r
 nppez::peek(path = test)
-#> Error: [ENOENT] Failed to search directory 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp': no such file or directory
+#> $NPPES_Data_Dissemination_030424_031024_Weekly.zip
+#> # A tibble: 10 × 4
+#>    zipfile                                      filename compressed uncompressed
+#>    <chr>                                        <chr>    <fs::byte>  <fs::bytes>
+#>  1 NPPES_Data_Dissemination_030424_031024_Week… pl_pfil…    202.92K       616.5K
+#>  2 NPPES_Data_Dissemination_030424_031024_Week… pl_pfil…        160          578
+#>  3 NPPES_Data_Dissemination_030424_031024_Week… otherna…     41.15K       119.9K
+#>  4 NPPES_Data_Dissemination_030424_031024_Week… otherna…         53           86
+#>  5 NPPES_Data_Dissemination_030424_031024_Week… npidata…      2.61M        28.5M
+#>  6 NPPES_Data_Dissemination_030424_031024_Week… npidata…      1.35K          12K
+#>  7 NPPES_Data_Dissemination_030424_031024_Week… endpoin…     75.46K         401K
+#>  8 NPPES_Data_Dissemination_030424_031024_Week… endpoin…        154          431
+#>  9 NPPES_Data_Dissemination_030424_031024_Week… NPPES_D…    459.91K       556.2K
+#> 10 NPPES_Data_Dissemination_030424_031024_Week… NPPES_D…    460.77K       543.7K
 ```
-
-    #> Error: [ENOENT] Failed to search directory 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp': no such file or directory
 
 <br><br>
 
