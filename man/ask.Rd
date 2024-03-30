@@ -4,12 +4,12 @@
 \alias{ask}
 \title{List the most recent NPPES Data Dissemination releases}
 \usage{
-ask(save = FALSE, dir = NULL)
+ask(save = FALSE, path = here::here("./"))
 }
 \arguments{
-\item{save}{write to csv; default is \code{FALSE}}
+\item{save}{\verb{<chr>} write to disk using \code{readr::write_csv()} ; default is \code{FALSE}}
 
-\item{dir}{directory to save to}
+\item{path}{\verb{<chr>} path to save to; default is \code{here::here()}}
 }
 \value{
 tibble with

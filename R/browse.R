@@ -1,8 +1,8 @@
 #' List the most recent NPPES Data Dissemination releases
 #'
-#' @param save write to csv; default is `FALSE`
+#' @param save `<chr>` write to disk using `readr::write_csv()` ; default is `FALSE`
 #'
-#' @param dir directory to save to
+#' @param path `<chr>` path to save to; default is `here::here()`
 #'
 #' @return tibble with
 #'
@@ -12,10 +12,14 @@
 #' @autoglobal
 #' @export
 ask <- function(save = FALSE,
-                dir  = NULL) {
+                path = here::here("./")) {
+
+  tictoc::tic("Download Time")
 
   url <- "https://download.cms.gov/nppes/NPI_Files.html"
   html <- rvest::read_html(url)
+
+  tictoc::toc()
 
   names <- html |>
     rvest::html_elements("li") |>
@@ -25,6 +29,16 @@ ask <- function(save = FALSE,
     rvest::html_elements("a") |>
     rvest::html_attr("href")
 
+  # [1] "Other Name Reference File
+  #      this file contains additional Other Names
+  #      associated with Type 2 NPIs"
+  # [2] "Practice Location Reference File
+  #      this file contains all of the non-primary
+  #      Practice Locations associated with Type 1 and Type 2 NPIs"
+  # [3] "Endpoint Reference File
+  #      this file contains all Endpoints associated
+  #      with Type 1 and Type 2 NPIs."
+
   results <- dplyr::tibble(
     name  = names[4:8],
     file = substr(links[4:8], 3, 50) |>
@@ -32,28 +46,26 @@ ask <- function(save = FALSE,
     url = paste0("https://download.cms.gov/nppes/", file),
     date_wk1 = stringr::str_extract(name, "\\d{6}") |>
       clock::date_parse(format = "%m%d%y"),
-    # date_wk2 = stringr::str_extract(name, "(_).*\\d{6}") |>
-    # stringr::str_remove_all("_") |>
-    # clock::date_parse(format = "%m%d%y"),
     date = stringr::str_extract(name, months_regex()) |>
       clock::date_parse(format = "%B %d, %Y") %>%
       dplyr::if_else(is.na(.), date_wk1, .),
-    elapsed_days = clock::date_count_between(date, clock::date_today(""), "day"),
     size = strex::str_after_last(name, "[(]") |>
       stringr::str_remove_all("[)]") |>
       stringr::str_remove_all("[,]") |>
       fs::fs_bytes()
     ) |>
-    dplyr::select(-date_wk1)
+    dplyr::select(-date_wk1, -name)
 
   if (save) {
     readr::write_csv(
       results,
       file = paste0(
-        dir,
-        "nppes_data_dissemination_info_",
-        results[[1]][[1]],
-        ".csv"
+        path,
+        stringr::str_replace(
+          results[[1]][[1]],
+          ".zip",
+          ".csv"
+          )
         )
       )
   }

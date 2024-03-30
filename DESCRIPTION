@@ -33,7 +33,9 @@ Imports:
     tibble,
     tidyr,
     vctrs,
-    zip
+    zip,
+    here,
+    tictoc
 Suggests: 
     roxyglobals,
     testthat (>= 3.0.0)

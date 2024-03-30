@@ -29,7 +29,15 @@ List the most recent NPPES Data Dissemination releases
 
 ``` r
 nppez::ask()
-#> Error in clock::date_parse(stringr::str_extract(name, months_regex()), : could not find function "%>%"
+#> Download Time: 0.42 sec elapsed
+#> # A tibble: 5 × 4
+#>   file                                              url       date          size
+#>   <chr>                                             <chr>     <date>     <fs::b>
+#> 1 NPPES_Data_Dissemination_March_2024.zip           https://… 2024-03-11 935.96M
+#> 2 NPPES_Deactivated_NPI_Report_031124.zip           https://… 2024-03-11   1.96M
+#> 3 NPPES_Data_Dissemination_030424_031024_Weekly.zip https://… 2024-03-04   3.83M
+#> 4 NPPES_Data_Dissemination_031124_031724_Weekly.zip https://… 2024-03-11    3.8M
+#> 5 NPPES_Data_Dissemination_031824_032424_Weekly.zip https://… 2024-03-18   4.31M
 ```
 
 ## Grab
