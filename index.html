@@ -92,7 +92,8 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andrewallenbruce/nppez" class="external-link">nppez</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fs.r-lib.org" class="external-link">fs</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path</a></span><span class="op">(</span><span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path_wd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"inst/tmp"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path</a></span><span class="op">(</span><span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path_wd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"inst/tmp"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://fs.r-lib.org/reference/create.html" class="external-link">dir_create</a></span><span class="op">(</span><span class="va">test</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="ask">Ask<a class="anchor" aria-label="anchor" href="#ask"></a>
 </h3>
@@ -102,11 +103,17 @@
 <span>  save <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">test</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Download Time: 0.55 sec elapsed</span></span>
-<span><span class="co">#&gt; Error in data.table::fwrite(obj, fs::path(path, fs::path_ext_set(obj[[1]][[1]], : No such file or directory: 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_March_2024.csv'. Unable to create new file for writing (it does not exist already). Do you have permission to write here, is there space on the disk and does the path exist?</span></span>
+<span><span class="co">#&gt; Download Time: 0.33 sec elapsed</span></span>
 <span></span>
 <span><span class="va">x</span></span>
-<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'x' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 5 × 4</span></span>
+<span><span class="co">#&gt;   file                                              url       date          size</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                                             &lt;chr&gt;     &lt;date&gt;     &lt;fs::b&gt;</span></span>
+<span><span class="co">#&gt; 1 NPPES_Data_Dissemination_March_2024.zip           https://… 2024-03-11 935.96M</span></span>
+<span><span class="co">#&gt; 2 NPPES_Deactivated_NPI_Report_031124.zip           https://… 2024-03-11   1.96M</span></span>
+<span><span class="co">#&gt; 3 NPPES_Data_Dissemination_030424_031024_Weekly.zip https://… 2024-03-04   3.83M</span></span>
+<span><span class="co">#&gt; 4 NPPES_Data_Dissemination_031124_031724_Weekly.zip https://… 2024-03-11    3.8M</span></span>
+<span><span class="co">#&gt; 5 NPPES_Data_Dissemination_031824_032424_Weekly.zip https://… 2024-03-18   4.31M</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="grab">Grab<a class="anchor" aria-label="anchor" href="#grab"></a>
@@ -118,18 +125,35 @@
 <span>  files <span class="op">=</span> <span class="st">"NPPES_Data_Dissemination_030424_031024_Weekly.zip"</span>,</span>
 <span>  path  <span class="op">=</span> <span class="va">test</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'x' not found</span></span>
+<span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp</span></span>
+<span><span class="co">#&gt; ├── NPPES_Data_Dissemination_030424_031024_Weekly.zip</span></span>
+<span><span class="co">#&gt; ├── NPPES_Data_Dissemination_March_2024.csv</span></span>
+<span><span class="co">#&gt; └── NPPES_Download_Log_2024-03-30.csv</span></span>
 <span></span>
 <span><span class="va">y</span></span>
-<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'y' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_030424_031024_Weekly.zip</span></span>
+<span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_March_2024.csv</span></span>
+<span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Download_Log_2024-03-30.csv</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="peek">Peek<a class="anchor" aria-label="anchor" href="#peek"></a>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">nppez</span><span class="fu">::</span><span class="fu"><a href="reference/peek.html">peek</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">test</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: [ENOENT] Failed to search directory 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp': no such file or directory</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#&gt; Error: [ENOENT] Failed to search directory 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp': no such file or directory</span></span></code></pre></div>
+<span><span class="co">#&gt; $NPPES_Data_Dissemination_030424_031024_Weekly.zip</span></span>
+<span><span class="co">#&gt; # A tibble: 10 × 4</span></span>
+<span><span class="co">#&gt;    zipfile                                      filename compressed uncompressed</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                                        &lt;chr&gt;    &lt;fs::byte&gt;  &lt;fs::bytes&gt;</span></span>
+<span><span class="co">#&gt;  1 NPPES_Data_Dissemination_030424_031024_Week… pl_pfil…    202.92K       616.5K</span></span>
+<span><span class="co">#&gt;  2 NPPES_Data_Dissemination_030424_031024_Week… pl_pfil…        160          578</span></span>
+<span><span class="co">#&gt;  3 NPPES_Data_Dissemination_030424_031024_Week… otherna…     41.15K       119.9K</span></span>
+<span><span class="co">#&gt;  4 NPPES_Data_Dissemination_030424_031024_Week… otherna…         53           86</span></span>
+<span><span class="co">#&gt;  5 NPPES_Data_Dissemination_030424_031024_Week… npidata…      2.61M        28.5M</span></span>
+<span><span class="co">#&gt;  6 NPPES_Data_Dissemination_030424_031024_Week… npidata…      1.35K          12K</span></span>
+<span><span class="co">#&gt;  7 NPPES_Data_Dissemination_030424_031024_Week… endpoin…     75.46K         401K</span></span>
+<span><span class="co">#&gt;  8 NPPES_Data_Dissemination_030424_031024_Week… endpoin…        154          431</span></span>
+<span><span class="co">#&gt;  9 NPPES_Data_Dissemination_030424_031024_Week… NPPES_D…    459.91K       556.2K</span></span>
+<span><span class="co">#&gt; 10 NPPES_Data_Dissemination_030424_031024_Week… NPPES_D…    460.77K       543.7K</span></span></code></pre></div>
 <p><br><br></p>
 <table class="table">
 <colgroup>
@@ -200,13 +224,13 @@
 <div class="section level3">
 <h3 id="prune">Prune<a class="anchor" aria-label="anchor" href="#prune"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">nppez</span><span class="fu">::</span><span class="fu"><a href="reference/prune.html">prune</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="st">"&lt;path-to-downloaded-zip-files&gt;"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="dispense">Dispense<a class="anchor" aria-label="anchor" href="#dispense"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">nppez</span><span class="fu">::</span><span class="fu"><a href="reference/dispense.html">dispense</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"&lt;path-to-downloaded-zip-files&gt;"</span>,</span>
 <span>                to <span class="op">=</span> <span class="st">"&lt;path-to-unzip-files-to&gt;"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
