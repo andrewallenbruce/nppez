@@ -2,23 +2,27 @@
 % Please edit documentation in R/browse.R
 \name{ask}
 \alias{ask}
-\title{List the most recent NPPES Data Dissemination releases}
+\title{NPPES Data Dissemination releases}
 \usage{
-ask(save = FALSE, path = here::here("./"))
+ask(save = FALSE, path = fs::path_wd())
 }
 \arguments{
-\item{save}{\verb{<chr>} write to disk using \code{readr::write_csv()} ; default is \code{FALSE}}
+\item{save}{\verb{<lgl>} write data to disk with \code{data.table::fwrite()}; default is \code{FALSE}}
 
-\item{path}{\verb{<chr>} path to save to; default is \code{here::here()}}
+\item{path}{\verb{<chr>} path to save csv to; default is \code{fs::path_wd()}}
 }
 \value{
-tibble with
+A \link[tibble:tibble-package]{tibble} of the search results.
 }
 \description{
-List the most recent NPPES Data Dissemination releases
+NPPES Data Dissemination releases
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-nppez::ask()
+tmp <- fs::dir_create(fs::path_temp("nppez"))
+
+nppez::ask(save = TRUE)
+
+fs::dir_delete(tmp)
 \dontshow{\}) # examplesIf}
 }

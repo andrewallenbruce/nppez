@@ -28,8 +28,9 @@ library(nppez)
 List the most recent NPPES Data Dissemination releases
 
 ``` r
-nppez::ask()
-#> Download Time: 0.42 sec elapsed
+x <- nppez::ask()
+#> Download Time: 0.34 sec elapsed
+x
 #> # A tibble: 5 × 4
 #>   file                                              url       date          size
 #>   <chr>                                             <chr>     <date>     <fs::b>
@@ -40,12 +41,17 @@ nppez::ask()
 #> 5 NPPES_Data_Dissemination_031824_032424_Weekly.zip https://… 2024-03-18   4.31M
 ```
 
-## Grab
+### Grab
 
 Download NPPES ZIP files to a local directory
 
 ``` r
-nppez::grab(dir = "C:/<folder-to-save-zip-files-to>")
+nppez::grab(x, files = "NPPES_Deactivated_NPI_Report_031124.zip")
+#> # A tibble: 1 × 10
+#>   success status_code resumefrom url    destfile error type  modified           
+#>   <lgl>         <int>      <dbl> <chr>  <chr>    <chr> <chr> <dttm>             
+#> 1 TRUE            200          0 https… "C:\\Us… <NA>  appl… 2024-03-11 00:01:43
+#> # ℹ 2 more variables: time <dbl>, headers <list>
 ```
 
 | download_date |    size | file                                                                 |
@@ -54,7 +60,7 @@ nppez::grab(dir = "C:/<folder-to-save-zip-files-to>")
 | 2023-04-12    | 851.05M | D:/nppez_data/zips/NPPES_Data_Dissemination_April_2023.zip           |
 | 2023-04-12    |   1.78M | D:/nppez_data/zips/NPPES_Deactivated_NPI_Report_041023.zip           |
 
-# Peek
+### Peek
 
 ``` r
 nppez::peek(dir = "<path-to-downloaded-zip-files>")
@@ -74,13 +80,13 @@ nppez::peek(dir = "<path-to-downloaded-zip-files>")
 | NPPES_Data_Dissemination_April_2023.zip | pl_pfile_20050523-20230409.csv        |             22M |            65.51M |
 | NPPES_Data_Dissemination_April_2023.zip | npidata_pfile_20050523-20230409.csv   |         801.64M |             8.66G |
 
-# Prune
+### Prune
 
 ``` r
 nppez::prune(dir = "<path-to-downloaded-zip-files>")
 ```
 
-# Dispense
+### Dispense
 
 ``` r
 nppez::dispense(from = "<path-to-downloaded-zip-files>",

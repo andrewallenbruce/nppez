@@ -8,7 +8,7 @@
 #' clean_deactivation("D:/<directory name>")
 #'
 #' @autoglobal
-#' @export
+#' @noRd
 clean_deactivation <- function(dir) {
 
   path <- fs::dir_ls(dir, glob = "*.xlsx")
@@ -54,7 +54,7 @@ clean_deactivation <- function(dir) {
 #' clean_endpoints("D:/<directory>/<filename>.csv")
 #'
 #' @autoglobal
-#' @export
+#' @noRd
 clean_endpoints <- function(dir) {
 
   path <- "D:/nppez_data/unzips/endpoint_pfile_20050523-20230409.csv"
@@ -89,7 +89,7 @@ clean_endpoints <- function(dir) {
 #' clean_locations("D:/<directory>/<filename>.csv")
 #' }
 #' @autoglobal
-#' @export
+#' @noRd
 clean_locations <- function(csv = NULL) {
 
   ## Non-Primary Practice Locations
@@ -127,7 +127,7 @@ clean_locations <- function(csv = NULL) {
 #' clean_weekly("D:/<directory>/<filename>.csv")
 #' }
 #' @autoglobal
-#' @export
+#' @noRd
 clean_weekly <- function(csv = NULL) {
 
   week <- readr::read_csv(
@@ -515,7 +515,7 @@ clean_weekly <- function(csv = NULL) {
 #' create_identifiers()
 #' }
 #' @autoglobal
-#' @export
+#' @noRd
 create_identifiers <- function(df) {
 
   identifier <- df |>
@@ -569,7 +569,7 @@ create_identifiers <- function(df) {
 #' create_taxonomy()
 #' }
 #' @autoglobal
-#' @export
+#' @noRd
 create_taxonomy <- function(df) {
 
   code <- df |>
@@ -641,7 +641,7 @@ create_taxonomy <- function(df) {
 #' create_address()
 #' }
 #' @autoglobal
-#' @export
+#' @noRd
 create_address <- function(df) {
 
   practice <- df |>

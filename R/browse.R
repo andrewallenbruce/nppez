@@ -1,25 +1,28 @@
-#' List the most recent NPPES Data Dissemination releases
+#' NPPES Data Dissemination releases
 #'
-#' @param save `<chr>` write to disk using `readr::write_csv()` ; default is `FALSE`
+#' @param save `<lgl>` write data to disk with `data.table::fwrite()`; default is `FALSE`
 #'
-#' @param path `<chr>` path to save to; default is `here::here()`
+#' @param path `<chr>` path to save csv to; default is `fs::path_wd()`
 #'
-#' @return tibble with
+#' @return A [tibble][tibble::tibble-package] of the search results.
 #'
 #' @examplesIf interactive()
-#' nppez::ask()
+#' tmp <- fs::dir_create(fs::path_temp("nppez"))
 #'
+#' nppez::ask(save = TRUE)
+#'
+#' fs::dir_delete(tmp)
 #' @autoglobal
 #' @export
 ask <- function(save = FALSE,
-                path = here::here("./")) {
+                path = fs::path_wd()) {
 
-  tictoc::tic("Download Time")
+  tictoc::tic("Download Time") ########################
 
   url <- "https://download.cms.gov/nppes/NPI_Files.html"
   html <- rvest::read_html(url)
 
-  tictoc::toc()
+  tictoc::toc() ########################################
 
   names <- html |>
     rvest::html_elements("li") |>
@@ -56,42 +59,54 @@ ask <- function(save = FALSE,
     ) |>
     dplyr::select(-date_wk1, -name)
 
+  class(results) <- c("ask", class(results))
+
   if (save) {
-    readr::write_csv(
+    data.table::fwrite(
       results,
-      file = paste0(
-        path,
-        stringr::str_replace(
-          results[[1]][[1]],
-          ".zip",
-          ".csv"
-          )
-        )
+      fs::path(path,
+               fs::path_ext_set(
+                 results[[1]][[1]],
+                 ".csv"
+                 )
+               )
       )
   }
   return(results)
 }
 
 #' Download NPPES ZIP files to a local directory
-#'
-#' @param dir path to local directory to download ZIPs to
+#' @param obj `<tbl_df>` object of class `ask`, returned from `nppez::ask()`
+#' @param files `<chr>` vector of files to download from ZIPs; default behavior is to download all files
+#' @param path `<chr>` path to download ZIPs to; default is `fs::path_wd()`
 #'
 #' @return tibble
 #'
 #' @examplesIf interactive()
-#' nppez::grab(dir = tempdir())
+#' nppez::ask() |>
+#' nppez::grab(files = "NPPES_Deactivated_NPI_Report_031124.zip")
 #'
 #' @autoglobal
 #' @export
-grab <- function(dir) {
+grab <- function(obj,
+                 files = NULL,
+                 path = fs::path_wd()) {
 
-  zips <- nppez::ask()$url
+  stopifnot("`obj` must be of class 'ask'" = inherits(obj, "ask"))
+
+  if (!is.null(files)) {
+
+    stopifnot("No `files` in results" = files %in% obj$file)
+
+    obj <- vctrs::vec_slice(obj, vctrs::vec_in(obj$file, files))
+
+    }
 
   curl::multi_download(
-    urls = zips,
-    destfiles = stringr::str_c(
-      dir,
-      basename(zips)
+    urls = obj$url,
+    destfiles = fs::path(
+      path,
+      basename(obj$url)
       )
     )
 }

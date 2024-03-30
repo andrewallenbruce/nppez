@@ -1,21 +1,21 @@
 #' Generate a sequence of numbers with a new prefix
 #'
-#' @param n `<int>` Number of sequences to generate
+#' @param n `<int>` Numeric sequence to generate
 #' @param new `<chr>` New prefix
-#' @param old `<chr>` Old prefix
 #' @param between `<chr>` Separator between `new` and `old`, default `" = "`
-#' @param enclose `<chr>` *(optional)* Vector `length(x) == 2` with which to enclose output
+#' @param old `<chr>` Old prefix
 #' @param collapse `<chr>` Separator between sequences, default `", "`
+#' @param enclose `<chr>` *(optional)* Vector of `length(x) == 2` with which to enclose output
 #' @param style `<lgl>` Apply `styler::style_text()` to output, default `TRUE`
 #'
 #' @return `<chr>` collapsed vector of `n` sequences
 #'
 #' @examples
-#' x <- rename_seq(
-#' n        = 3, # can also be 25:300 etc.
+#' rename_seq(
+#' n        = 10,
 #' new      = "id_issuer_",
-#' old      = "Other.ID.Issuer.",
 #' between  = " = ",
+#' old      = "Other.ID.Issuer.",
 #' enclose  = c("x = c(", ")"),
 #' collapse = ",\n ",
 #' style    = TRUE)
@@ -24,10 +24,10 @@
 #' @export
 rename_seq <- function(n,
                        new,
-                       old,
                        between = " = ",
-                       enclose = NULL,
+                       old,
                        collapse = ", ",
+                       enclose = NULL,
                        style = TRUE) {
 
   x <- stringr::str_c(
@@ -38,8 +38,17 @@ rename_seq <- function(n,
     seq(n),
     collapse = collapse)
 
-  if (!is.null(enclose)) {x <- stringr::str_c(enclose[1], x, enclose[2])}
-  if (style) {x <- styler::style_text(x)}
+  if (!is.null(enclose)) {
+    x <- stringr::str_c(
+      enclose[1],
+      x,
+      enclose[2]
+    )
+  }
+
+  if (style) {
+    x <- styler::style_text(x)
+  }
   return(x)
 }
 
@@ -50,7 +59,7 @@ rename_seq <- function(n,
 #' @returns `<chr>` single line character vector
 #'
 #' @examplesIf interactive()
-#' is_directory("D:/")
+#' single_line_string("D:/")
 #'
 #' @autoglobal
 #' @export

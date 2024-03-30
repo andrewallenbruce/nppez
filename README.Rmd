@@ -45,16 +45,24 @@ library(nppez)
 List the most recent NPPES Data Dissemination releases
 
 ```{r ask}
-nppez::ask()
+x <- nppez::ask()
+x
 ```
 
-## Grab
+### Grab
 
 Download NPPES ZIP files to a local directory
 
-```{r grab, eval=FALSE}
-nppez::grab(dir = "C:/<folder-to-save-zip-files-to>")
+```{r grab}
+nppez::grab(x, files = "NPPES_Deactivated_NPI_Report_031124.zip")
 ```
+
+
+```{r, echo=FALSE}
+fs::file_delete("NPPES_Deactivated_NPI_Report_031124.zip")
+```
+
+
 
 |download_date |    size|file                                                                 |
 |:-------------|-------:|:--------------------------------------------------------------------|
@@ -63,7 +71,7 @@ nppez::grab(dir = "C:/<folder-to-save-zip-files-to>")
 |2023-04-12    |   1.78M|D:/nppez_data/zips/NPPES_Deactivated_NPI_Report_041023.zip           |
 
 
-# Peek
+### Peek
 
 ```{r peek, eval=FALSE}
 nppez::peek(dir = "<path-to-downloaded-zip-files>")
@@ -114,13 +122,13 @@ dplyr::filter(parent_zip == "NPPES_Data_Dissemination_April_2023.zip") |>
 |NPPES_Data_Dissemination_April_2023.zip |npidata_pfile_20050523-20230409.csv   |         801.64M|             8.66G|
 
 
-# Prune
+### Prune
 
 ```{r prune, eval=FALSE}
 nppez::prune(dir = "<path-to-downloaded-zip-files>")
 ```
 
-# Dispense
+### Dispense
 
 ```{r dispense, eval=FALSE}
 nppez::dispense(from = "<path-to-downloaded-zip-files>",

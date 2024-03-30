@@ -7,25 +7,25 @@
 rename_seq(
   n,
   new,
-  old,
   between = " = ",
-  enclose = NULL,
+  old,
   collapse = ", ",
+  enclose = NULL,
   style = TRUE
 )
 }
 \arguments{
-\item{n}{\verb{<int>} Number of sequences to generate}
+\item{n}{\verb{<int>} Numeric sequence to generate}
 
 \item{new}{\verb{<chr>} New prefix}
 
-\item{old}{\verb{<chr>} Old prefix}
-
 \item{between}{\verb{<chr>} Separator between \code{new} and \code{old}, default \code{" = "}}
 
-\item{enclose}{\verb{<chr>} \emph{(optional)} Vector \code{length(x) == 2} with which to enclose output}
+\item{old}{\verb{<chr>} Old prefix}
 
 \item{collapse}{\verb{<chr>} Separator between sequences, default \code{", "}}
+
+\item{enclose}{\verb{<chr>} \emph{(optional)} Vector of \code{length(x) == 2} with which to enclose output}
 
 \item{style}{\verb{<lgl>} Apply \code{styler::style_text()} to output, default \code{TRUE}}
 }
@@ -36,11 +36,11 @@ rename_seq(
 Generate a sequence of numbers with a new prefix
 }
 \examples{
-x <- rename_seq(
-n        = 3, # can also be 25:300 etc.
+rename_seq(
+n        = 10,
 new      = "id_issuer_",
-old      = "Other.ID.Issuer.",
 between  = " = ",
+old      = "Other.ID.Issuer.",
 enclose  = c("x = c(", ")"),
 collapse = ",\n ",
 style    = TRUE)

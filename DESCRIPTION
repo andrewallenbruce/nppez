@@ -34,7 +34,7 @@ Imports:
     tidyr,
     vctrs,
     zip,
-    here,
+    data.table,
     tictoc
 Suggests: 
     roxyglobals,

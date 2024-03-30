@@ -17,7 +17,7 @@ Format multiple line character vector to single line
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-is_directory("D:/")
+single_line_string("D:/")
 \dontshow{\}) # examplesIf}
 }
 \keyword{internal}

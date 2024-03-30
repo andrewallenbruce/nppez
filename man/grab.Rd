@@ -4,10 +4,14 @@
 \alias{grab}
 \title{Download NPPES ZIP files to a local directory}
 \usage{
-grab(dir)
+grab(obj, files = NULL, path = fs::path_wd())
 }
 \arguments{
-\item{dir}{path to local directory to download ZIPs to}
+\item{obj}{\verb{<tbl_df>} object of class \code{ask}, returned from \code{nppez::ask()}}
+
+\item{files}{\verb{<chr>} vector of files to download from ZIPs; default behavior is to download all files}
+
+\item{path}{\verb{<chr>} path to download ZIPs to; default is \code{fs::path_wd()}}
 }
 \value{
 tibble
@@ -17,6 +21,7 @@ Download NPPES ZIP files to a local directory
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-nppez::grab(dir = tempdir())
+nppez::ask() |>
+nppez::grab(files = "NPPES_Deactivated_NPI_Report_031124.zip")
 \dontshow{\}) # examplesIf}
 }
