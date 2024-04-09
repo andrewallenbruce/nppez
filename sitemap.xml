@@ -19,9 +19,6 @@
     <loc>https://andrewallenbruce.github.io/nppez/reference/ask.html</loc>
   </url>
   <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/clean_number.html</loc>
-  </url>
-  <url>
     <loc>https://andrewallenbruce.github.io/nppez/reference/dispense.html</loc>
   </url>
   <url>
@@ -29,12 +26,6 @@
   </url>
   <url>
     <loc>https://andrewallenbruce.github.io/nppez/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/is_directory.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/is_readable.html</loc>
   </url>
   <url>
     <loc>https://andrewallenbruce.github.io/nppez/reference/nppez-package.html</loc>
@@ -47,11 +38,5 @@
   </url>
   <url>
     <loc>https://andrewallenbruce.github.io/nppez/reference/prune.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/rename_seq.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/single_line_string.html</loc>
   </url>
 </urlset>
