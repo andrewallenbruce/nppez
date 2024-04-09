@@ -14,7 +14,7 @@ You can install **nppez** from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("pak")
-pak::pak("andrewallenbruce/northstar")
+pak::pak("andrewallenbruce/nppez")
 ```
 
 ## :beginner: Usage
@@ -36,7 +36,7 @@ x <- nppez::ask(
   save = TRUE,
   path = test
 )
-#> Download Time: 0.34 sec elapsed
+#> Download Time: 0.28 sec elapsed
 
 x
 #> # A tibble: 5 × 4
