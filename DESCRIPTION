@@ -11,13 +11,15 @@ Description: Provides a tidy interface to the National Plan and Provider
     Registry data, perform updates according to the NPPES data release
     schedule and prepare it for storage.
 License: CC BY 4.0
-URL: https://github.com/andrewallenbruce/nppez, https://andrewallenbruce.github.io/nppez/
+URL: https://github.com/andrewallenbruce/nppez,
+    https://andrewallenbruce.github.io/nppez/
 BugReports: https://github.com/andrewallenbruce/nppez/issues
 Depends: 
     R (>= 4.1.0)
 Imports: 
     clock,
     curl,
+    data.table,
     dplyr,
     fs,
     janitor,
@@ -29,22 +31,22 @@ Imports:
     rvest,
     strex,
     stringr,
-    styler,
     tibble,
+    tictoc,
     tidyr,
     vctrs,
-    zip,
-    data.table,
-    tictoc
+    zip
 Suggests: 
     roxyglobals,
-    prettycode,
+    fuimus,
     testthat (>= 3.0.0)
+Remotes: 
+    github::andrewallenbruce/fuimus
+Config/roxyglobals/filename: globals.R
+Config/roxyglobals/unique: TRUE
+Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
     "roxyglobals::global_roclet"))
 RoxygenNote: 7.3.1
-Config/testthat/edition: 3
-Config/roxyglobals/filename: globals.R
-Config/roxyglobals/unique: FALSE

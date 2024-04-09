@@ -13,6 +13,7 @@
 #'
 #' fs::dir_delete(tmp)
 #' @autoglobal
+#'
 #' @export
 ask <- function(save = FALSE,
                 path = fs::path_wd()) {
@@ -49,7 +50,7 @@ ask <- function(save = FALSE,
     url = paste0("https://download.cms.gov/nppes/", file),
     date_wk1 = stringr::str_extract(name, "\\d{6}") |>
       clock::date_parse(format = "%m%d%y"),
-    date = stringr::str_extract(name, months_regex()) |>
+    date = stringr::str_extract(name, fuimus:::months_regex()) |>
       clock::date_parse(format = "%B %d, %Y") %>%
       dplyr::if_else(is.na(.), date_wk1, .),
     size = strex::str_after_last(name, "[(]") |>
@@ -203,7 +204,7 @@ prune <- function(dir) {
     dplyr::mutate(
       contains_month = stringr::str_detect(
         parent_zip,
-        months_regex())) |>
+        fuimus:::months_regex())) |>
     dplyr::filter(
       contains_month == TRUE
       ) |>

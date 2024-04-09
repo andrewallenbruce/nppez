@@ -85,52 +85,6 @@ fs::dir_delete(test)
 ```
 
 
-<br><br>
-
-```{r peek-1, eval=FALSE, echo=FALSE}
-nppez::peek(dir = "D:/nppez_data/zips/") |> 
-  dplyr::group_by(parent_zip) |> 
-  dplyr::mutate(csv = stringr::str_extract_all(filename, "[.]csv$")) |> 
-  tidyr::unnest(csv) |>
-  dplyr::mutate(fileheader = stringr::str_ends(filename, 
-                                               "fileheader[.]csv$", 
-                                               negate = TRUE)) |> 
-  dplyr::filter(fileheader == TRUE) |>
-  dplyr::mutate(csv = NULL, fileheader = NULL) |> 
-  dplyr::summarise(size_compressed = sum(size_compressed),
-                   size_uncompressed = sum(size_uncompressed)) |> 
-  gluedown::md_table()
-```
-
-
-|parent_zip                                        | size_compressed| size_uncompressed|
-|:-------------------------------------------------|---------------:|-----------------:|
-|NPPES_Data_Dissemination_040323_040923_Weekly.zip |           2.72M|            29.16M|
-|NPPES_Data_Dissemination_April_2023.zip           |         850.15M|             8.84G|
-
-<br><br>
-
-```{r peek-2, eval=FALSE, echo=FALSE}
-nppez::peek(dir = "D:/nppez_data/zips/") |> 
-dplyr::filter(parent_zip == "NPPES_Data_Dissemination_April_2023.zip") |> 
-  dplyr::mutate(csv = stringr::str_extract_all(filename, "[.]csv$")) |> 
-  tidyr::unnest(csv) |>
-  dplyr::mutate(fileheader = stringr::str_ends(filename, "fileheader[.]csv$", 
-                                               negate = TRUE)) |> 
-  dplyr::filter(fileheader == TRUE) |>
-  dplyr::mutate(csv = NULL, fileheader = NULL) |> 
-  gluedown::md_table()
-```
-
-
-|parent_zip                              |filename                              | size_compressed| size_uncompressed|
-|:---------------------------------------|:-------------------------------------|---------------:|-----------------:|
-|NPPES_Data_Dissemination_April_2023.zip |othername_pfile_20050523-20230409.csv |           8.97M|            25.88M|
-|NPPES_Data_Dissemination_April_2023.zip |endpoint_pfile_20050523-20230409.csv  |          17.53M|            96.76M|
-|NPPES_Data_Dissemination_April_2023.zip |pl_pfile_20050523-20230409.csv        |             22M|            65.51M|
-|NPPES_Data_Dissemination_April_2023.zip |npidata_pfile_20050523-20230409.csv   |         801.64M|             8.66G|
-
-
 ### Prune
 
 ```{r prune, eval=FALSE}

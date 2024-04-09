@@ -36,17 +36,17 @@ x <- nppez::ask(
   save = TRUE,
   path = test
 )
-#> Download Time: 0.33 sec elapsed
+#> Download Time: 0.34 sec elapsed
 
 x
 #> # A tibble: 5 × 4
-#>   file                                              url       date          size
-#>   <chr>                                             <chr>     <date>     <fs::b>
-#> 1 NPPES_Data_Dissemination_March_2024.zip           https://… 2024-03-11 935.96M
-#> 2 NPPES_Deactivated_NPI_Report_031124.zip           https://… 2024-03-11   1.96M
-#> 3 NPPES_Data_Dissemination_030424_031024_Weekly.zip https://… 2024-03-04   3.83M
-#> 4 NPPES_Data_Dissemination_031124_031724_Weekly.zip https://… 2024-03-11    3.8M
-#> 5 NPPES_Data_Dissemination_031824_032424_Weekly.zip https://… 2024-03-18   4.31M
+#>   file                                                url     date          size
+#>   <chr>                                               <chr>   <date>     <fs::b>
+#> 1 "NPPES_Data_Dissemination_April_2024.zip"           https:… 2024-04-08 941.55M
+#> 2 "NPPES_Deactivated_NPI_Report_040824.zip"           https:… 2024-04-08   1.98M
+#> 3 "NPPES_Data_Dissemination_040124_040724_Weekly.zip" https:… 2024-04-01   4.03M
+#> 4 ""                                                  https:… NA              NA
+#> 5  <NA>                                               https:… NA              NA
 ```
 
 ### Grab
@@ -59,52 +59,21 @@ y <- nppez::grab(
   files = "NPPES_Data_Dissemination_030424_031024_Weekly.zip",
   path  = test
   )
-#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp
-#> ├── NPPES_Data_Dissemination_030424_031024_Weekly.zip
-#> ├── NPPES_Data_Dissemination_March_2024.csv
-#> └── NPPES_Download_Log_2024-03-30.csv
+#> Error in nppez::grab(obj = x, files = "NPPES_Data_Dissemination_030424_031024_Weekly.zip", : No `files` in results
 
 y
-#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_030424_031024_Weekly.zip
-#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_March_2024.csv
-#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Download_Log_2024-03-30.csv
+#> Error in eval(expr, envir, enclos): object 'y' not found
 ```
 
 ### Peek
 
 ``` r
 nppez::peek(path = test)
-#> $NPPES_Data_Dissemination_030424_031024_Weekly.zip
-#> # A tibble: 10 × 4
-#>    zipfile                                      filename compressed uncompressed
-#>    <chr>                                        <chr>    <fs::byte>  <fs::bytes>
-#>  1 NPPES_Data_Dissemination_030424_031024_Week… pl_pfil…    202.92K       616.5K
-#>  2 NPPES_Data_Dissemination_030424_031024_Week… pl_pfil…        160          578
-#>  3 NPPES_Data_Dissemination_030424_031024_Week… otherna…     41.15K       119.9K
-#>  4 NPPES_Data_Dissemination_030424_031024_Week… otherna…         53           86
-#>  5 NPPES_Data_Dissemination_030424_031024_Week… npidata…      2.61M        28.5M
-#>  6 NPPES_Data_Dissemination_030424_031024_Week… npidata…      1.35K          12K
-#>  7 NPPES_Data_Dissemination_030424_031024_Week… endpoin…     75.46K         401K
-#>  8 NPPES_Data_Dissemination_030424_031024_Week… endpoin…        154          431
-#>  9 NPPES_Data_Dissemination_030424_031024_Week… NPPES_D…    459.91K       556.2K
-#> 10 NPPES_Data_Dissemination_030424_031024_Week… NPPES_D…    460.77K       543.7K
+#> Error in `dplyr::mutate()`:
+#> ℹ In argument: `compressed = fs::fs_bytes(compressed_size)`.
+#> Caused by error:
+#> ! object 'compressed_size' not found
 ```
-
-<br><br>
-
-| parent_zip                                        | size_compressed | size_uncompressed |
-|:--------------------------------------------------|----------------:|------------------:|
-| NPPES_Data_Dissemination_040323_040923_Weekly.zip |           2.72M |            29.16M |
-| NPPES_Data_Dissemination_April_2023.zip           |         850.15M |             8.84G |
-
-<br><br>
-
-| parent_zip                              | filename                              | size_compressed | size_uncompressed |
-|:----------------------------------------|:--------------------------------------|----------------:|------------------:|
-| NPPES_Data_Dissemination_April_2023.zip | othername_pfile_20050523-20230409.csv |           8.97M |            25.88M |
-| NPPES_Data_Dissemination_April_2023.zip | endpoint_pfile_20050523-20230409.csv  |          17.53M |            96.76M |
-| NPPES_Data_Dissemination_April_2023.zip | pl_pfile_20050523-20230409.csv        |             22M |            65.51M |
-| NPPES_Data_Dissemination_April_2023.zip | npidata_pfile_20050523-20230409.csv   |         801.64M |             8.66G |
 
 ### Prune
 

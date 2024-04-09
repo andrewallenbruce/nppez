@@ -2,13 +2,8 @@
 
 export("%>%")
 export(ask)
-export(clean_number)
 export(dispense)
 export(grab)
-export(is_directory)
-export(is_readable)
 export(peek)
 export(prune)
-export(rename_seq)
-export(single_line_string)
 importFrom(magrittr,"%>%")
