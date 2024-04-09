@@ -6,6 +6,8 @@
 \alias{nppez-package}
 \title{nppez: Tidy NPPES NPI Registry}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Provides a tidy interface to the National Plan and Provider Enumeration System (NPPES) National Provider Identifier (NPI) Registry, a database of all health care providers who have been assigned an NPI. Includes functions to download and parse the NPI Registry data, perform updates according to the NPPES data release schedule and prepare it for storage.
 }
 \seealso{

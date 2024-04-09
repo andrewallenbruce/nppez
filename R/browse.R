@@ -58,7 +58,9 @@ ask <- function(save = FALSE,
       stringr::str_remove_all("[,]") |>
       fs::fs_bytes()
     ) |>
-    dplyr::select(-date_wk1, -name)
+    dplyr::select(-date_wk1, -name) |>
+    dplyr::mutate(file = fuimus::na_if_common(file)) |>
+    dplyr::filter(!is.na(file))
 
   class(obj) <- c("nppez::ask", class(obj))
 
@@ -77,11 +79,14 @@ ask <- function(save = FALSE,
 }
 
 #' Download NPPES ZIP files to a local directory
+#'
 #' @param obj `<tbl_df>` object of class `nppez::ask`, returned from `nppez::ask()`
+#'
 #' @param files `<chr>` vector of files to download from ZIPs; default behavior is to download all files
+#'
 #' @param path `<chr>` path to download ZIPs to; default is `fs::path_wd()`
 #'
-#' @return tibble
+#' @returns tibble
 #'
 #' @examplesIf interactive()
 #' nppez::ask() |>
@@ -99,7 +104,7 @@ grab <- function(obj,
 
     stopifnot("No `files` in results" = files %in% obj$file)
 
-    obj <- vctrs::vec_slice(obj, vctrs::vec_in(obj$file, files))
+    obj <- fuimus::search_in_if(obj, obj$file, files)
 
   }
 
@@ -115,19 +120,19 @@ grab <- function(obj,
 
   class(log) <- c("nppez::log", class(log))
 
-  data.table::fwrite(
-    log,
-    fs::path(
-      path,
-      fs::path_ext_set(
-        stringr::str_c(
-          "NPPES_Download_Log_",
-          clock::date_today("")
-          ),
-        ".csv"
-        )
-      )
-    )
+  # data.table::fwrite(
+  #   log,
+  #   fs::path(
+  #     path,
+  #     fs::path_ext_set(
+  #       stringr::str_c(
+  #         "NPPES_Download_Log_",
+  #         clock::date_today("")
+  #         ),
+  #       ".csv"
+  #       )
+  #     )
+  #   )
   return(fs::dir_tree(path))
 }
 
@@ -179,63 +184,32 @@ peek <- function(path) {
 #' @export
 prune <- function(dir) {
 
-  fs::dir_info(dir) |>
+  parents <- fs::dir_info(dir) |>
     dplyr::select(path) |>
-    dplyr::mutate(
-      zip = stringr::str_ends(
-        path,
-        ".zip"
-        )
-      ) |>
-    dplyr::filter(
-      zip == TRUE
-      ) |>
-    dplyr::mutate(
-      zip = NULL
-      ) |>
+    dplyr::filter(stringr::str_ends(path,".zip")) |>
     tibble::deframe() |>
     rlang::set_names(basename) |>
-    purrr::map(
-      zip::zip_list
-      ) |>
-    purrr::list_rbind(
-      names_to = "parent_zip"
-      ) |>
-    dplyr::mutate(
-      contains_month = stringr::str_detect(
-        parent_zip,
-        fuimus::months_regex())) |>
-    dplyr::filter(
-      contains_month == TRUE
-      ) |>
-    dplyr::select(filename) |>
-    dplyr::mutate(
-      fileheader = stringr::str_ends(
-        filename,
-        "fileheader[.]csv$",
-        negate = FALSE
-        )
-      ) |>
-    dplyr::mutate(
-      pdf = stringr::str_ends(
-        filename,
-        "[.]pdf$",
-        negate = FALSE
-        )
-      ) |>
-    dplyr::filter(
-      fileheader == FALSE,
-      pdf == FALSE
-      ) |>
-    dplyr::select(filename) |>
-    tibble::deframe()
+    purrr::map(zip::zip_list) |>
+    purrr::list_rbind(names_to = "parent_zip") |>
+    dplyr::tibble() |>
+    dplyr::select(parent_zip, filename, compressed_size, uncompressed_size)
+
+  # parents |>
+  #   dplyr::select(filename) |>
+  #   dplyr::mutate(fileheader = stringr::str_ends(filename, "fileheader[.]csv$", negate = FALSE)) |>
+  #   dplyr::mutate(pdf = stringr::str_ends(filename, "[.]pdf$", negate = FALSE)) |>
+  #   dplyr::filter(fileheader == FALSE, pdf == FALSE) |>
+  #   dplyr::select(filename) |>
+  #   tibble::deframe()
+
+  parents
 }
 
 #' Unzip NPPES ZIPs
 #'
-#' @param zip_dir path to directory containing ZIPs
+#' @param zip_from path to directory containing ZIPs
 #'
-#' @param unzip_dir path to directory to unzip ZIPs
+#' @param unzip_to path to directory to unzip ZIPs
 #'
 #' @param files character vector of files inside a zip file to unzip
 #'
@@ -246,22 +220,14 @@ prune <- function(dir) {
 #'
 #' @autoglobal
 #' @export
-dispense <- function(zip_dir,
-                     unzip_dir,
+dispense <- function(unzip,
                      files = NULL) {
 
-  fs::dir_info(
-    zip_dir
-    ) |>
-    dplyr::select(
-      path
-      ) |>
+  fs::dir_info(unzip) |>
+    dplyr::filter(stringr::str_ends(path, ".zip")) |>
+    dplyr::select(path) |>
     tibble::deframe() |>
-    purrr::walk(
-      zip::unzip,
-      exdir = unzip_dir,
-      files = files
-      )
+    purrr::walk(zip::unzip, exdir = unzip, files = NULL)
 }
 
 #     dplyr::mutate(

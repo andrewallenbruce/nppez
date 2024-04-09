@@ -34,11 +34,10 @@ Imports:
     tibble,
     tictoc,
     tidyr,
-    vctrs,
     zip
 Suggests: 
-    roxyglobals,
     fuimus,
+    roxyglobals,
     testthat (>= 3.0.0)
 Remotes: 
     github::andrewallenbruce/fuimus

@@ -38,9 +38,8 @@ utils::globalVariables(c(
   # <peek>
   "compressed",
   # <peek>
-  "compressed_size",
   # <prune>
-  "contains_month",
+  "compressed_size",
   # <ask>
   "date_wk1",
   # <clean_deactivation>
@@ -56,8 +55,6 @@ utils::globalVariables(c(
   "entity_type_code",
   # <clean_weekly>
   "enumeration_date",
-  # <prune>
-  "fileheader",
   # <peek>
   # <prune>
   "filename",
@@ -596,8 +593,6 @@ utils::globalVariables(c(
   # <prune>
   # <dispense>
   "path",
-  # <prune>
-  "pdf",
   # <create_taxonomy>
   "primary_taxonomy",
   # <clean_weekly>
@@ -741,9 +736,8 @@ utils::globalVariables(c(
   # <peek>
   "uncompressed",
   # <peek>
-  "uncompressed_size",
   # <prune>
-  "zip",
+  "uncompressed_size",
   # <peek>
   "zipfile",
   NULL

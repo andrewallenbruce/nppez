@@ -18,7 +18,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-# nppez
+# nppez <a href="https://andrewallenbruce.github.io/nppez/"><img src="man/figures/logo.png" align="right" height="200" alt="nppez website" /></a>
+
 
 > Tidy NPPES NPI Registry Data Files
 
@@ -64,7 +65,7 @@ Download NPPES ZIP files to a local directory
 ```{r grab}
 y <- nppez::grab(
   obj   = x, 
-  files = "NPPES_Data_Dissemination_030424_031024_Weekly.zip",
+  files = "NPPES_Deactivated_NPI_Report_040824.zip",
   path  = test
   )
 
@@ -80,23 +81,40 @@ nppez::peek(path = test)
 
 
 
+
+
+
+### Prune
+
+```{r prune}
+nppez::prune(dir = test)
+```
+
+### Dispense
+
+```{r dispense}
+nppez::dispense(test, "NPPES Deactivated NPI Report 20240408.xlsx")
+```
+
+
+## Load
+
+```{r}
+readxl::read_xlsx(
+  path = fs::path(
+    test, 
+    "NPPES Deactivated NPI Report 20240408.xlsx"), 
+  skip = 1) |> 
+  janitor::clean_names() |>
+  dplyr::mutate(nppes_deactivation_date = lubridate::mdy(nppes_deactivation_date))
+```
+
+
 ```{r, echo=FALSE}
 fs::dir_delete(test)
 ```
 
 
-### Prune
-
-```{r prune, eval=FALSE}
-nppez::prune(dir = "<path-to-downloaded-zip-files>")
-```
-
-### Dispense
-
-```{r dispense, eval=FALSE}
-nppez::dispense(from = "<path-to-downloaded-zip-files>",
-                to = "<path-to-unzip-files-to>")
-```
 
 ```{r results='asis', echo=FALSE, eval=FALSE}
 fs::dir_info("D:/nppez_data/unzips/") |> 
@@ -114,17 +132,6 @@ fs::dir_info("D:/nppez_data/unzips/") |>
                 fileheader = NULL) |> 
   gluedown::md_table()
 ```
-
-|date       |    size|filename                              |
-|:----------|-------:|:-------------------------------------|
-|2023-04-11 |  96.76M|endpoint_pfile_20050523-20230409.csv  |
-|2023-04-12 | 330.03K|endpoint_pfile_20230403-20230409.csv  |
-|2023-04-11 |   8.66G|npidata_pfile_20050523-20230409.csv   |
-|2023-04-12 |  28.33M|npidata_pfile_20230403-20230409.csv   |
-|2023-04-11 |  25.88M|othername_pfile_20050523-20230409.csv |
-|2023-04-12 |  86.44K|othername_pfile_20230403-20230409.csv |
-|2023-04-11 |  65.51M|pl_pfile_20050523-20230409.csv        |
-|2023-04-12 | 431.35K|pl_pfile_20230403-20230409.csv        |
 
 
 ```{r, echo=FALSE, eval=FALSE}

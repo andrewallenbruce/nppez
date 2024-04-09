@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# nppez
+# nppez <a href="https://andrewallenbruce.github.io/nppez/"><img src="man/figures/logo.png" align="right" height="200" alt="nppez website" /></a>
 
 > Tidy NPPES NPI Registry Data Files
 
@@ -36,17 +36,15 @@ x <- nppez::ask(
   save = TRUE,
   path = test
 )
-#> Download Time: 0.28 sec elapsed
+#> Download Time: 0.35 sec elapsed
 
 x
-#> # A tibble: 5 × 4
-#>   file                                                url     date          size
-#>   <chr>                                               <chr>   <date>     <fs::b>
-#> 1 "NPPES_Data_Dissemination_April_2024.zip"           https:… 2024-04-08 941.55M
-#> 2 "NPPES_Deactivated_NPI_Report_040824.zip"           https:… 2024-04-08   1.98M
-#> 3 "NPPES_Data_Dissemination_040124_040724_Weekly.zip" https:… 2024-04-01   4.03M
-#> 4 ""                                                  https:… NA              NA
-#> 5  <NA>                                               https:… NA              NA
+#> # A tibble: 3 × 4
+#>   file                                              url       date          size
+#>   <chr>                                             <chr>     <date>     <fs::b>
+#> 1 NPPES_Data_Dissemination_April_2024.zip           https://… 2024-04-08 941.55M
+#> 2 NPPES_Deactivated_NPI_Report_040824.zip           https://… 2024-04-08   1.98M
+#> 3 NPPES_Data_Dissemination_040124_040724_Weekly.zip https://… 2024-04-01   4.03M
 ```
 
 ### Grab
@@ -56,48 +54,57 @@ Download NPPES ZIP files to a local directory
 ``` r
 y <- nppez::grab(
   obj   = x, 
-  files = "NPPES_Data_Dissemination_030424_031024_Weekly.zip",
+  files = "NPPES_Deactivated_NPI_Report_040824.zip",
   path  = test
   )
-#> Error in nppez::grab(obj = x, files = "NPPES_Data_Dissemination_030424_031024_Weekly.zip", : No `files` in results
+#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp
+#> ├── NPPES_Data_Dissemination_April_2024.csv
+#> └── NPPES_Deactivated_NPI_Report_040824.zip
 
 y
-#> Error in eval(expr, envir, enclos): object 'y' not found
+#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_April_2024.csv
+#> C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Deactivated_NPI_Report_040824.zip
 ```
 
 ### Peek
 
 ``` r
 nppez::peek(path = test)
-#> Error in `dplyr::mutate()`:
-#> ℹ In argument: `compressed = fs::fs_bytes(compressed_size)`.
-#> Caused by error:
-#> ! object 'compressed_size' not found
+#> $NPPES_Deactivated_NPI_Report_040824.zip
+#> # A tibble: 1 × 4
+#>   zipfile                                 filename       compressed uncompressed
+#>   <chr>                                   <chr>          <fs::byte>  <fs::bytes>
+#> 1 NPPES_Deactivated_NPI_Report_040824.zip NPPES Deactiv…      1.98M        4.11M
 ```
 
 ### Prune
 
 ``` r
-nppez::prune(dir = "<path-to-downloaded-zip-files>")
+nppez::prune(dir = test)
+#> # A tibble: 1 × 4
+#>   parent_zip                          filename compressed_size uncompressed_size
+#>   <chr>                               <chr>              <dbl>             <dbl>
+#> 1 NPPES_Deactivated_NPI_Report_04082… NPPES D…         2073236           4313447
 ```
 
 ### Dispense
 
 ``` r
-nppez::dispense(from = "<path-to-downloaded-zip-files>",
-                to = "<path-to-unzip-files-to>")
+nppez::dispense(test, "NPPES Deactivated NPI Report 20240408.xlsx")
 ```
 
-| date       |    size | filename                              |
-|:-----------|--------:|:--------------------------------------|
-| 2023-04-11 |  96.76M | endpoint_pfile_20050523-20230409.csv  |
-| 2023-04-12 | 330.03K | endpoint_pfile_20230403-20230409.csv  |
-| 2023-04-11 |   8.66G | npidata_pfile_20050523-20230409.csv   |
-| 2023-04-12 |  28.33M | npidata_pfile_20230403-20230409.csv   |
-| 2023-04-11 |  25.88M | othername_pfile_20050523-20230409.csv |
-| 2023-04-12 |  86.44K | othername_pfile_20230403-20230409.csv |
-| 2023-04-11 |  65.51M | pl_pfile_20050523-20230409.csv        |
-| 2023-04-12 | 431.35K | pl_pfile_20230403-20230409.csv        |
+## Load
+
+``` r
+readxl::read_xlsx(
+  path = fs::path(
+    test, 
+    "NPPES Deactivated NPI Report 20240408.xlsx"), 
+  skip = 1) |> 
+  janitor::clean_names() |>
+  dplyr::mutate(nppes_deactivation_date = lubridate::mdy(nppes_deactivation_date))
+#> Error: `path` does not exist: 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES Deactivated NPI Report 20240408.xlsx'
+```
 
 ------------------------------------------------------------------------
 
