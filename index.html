@@ -82,10 +82,11 @@
 </h1>
 </div>
 <blockquote>
-<p>Tidy NPPES NPI Registry Data Files</p>
+<p>Regularly <strong>Dispense</strong> NPPES Registry Data</p>
 </blockquote>
 <!-- badges: start -->
 <!-- badges: end -->
+<p><br></p>
 <div class="section level2">
 <h2 id="package-installation">
 <span class="emoji" data-emoji="package">📦</span> Installation<a class="anchor" aria-label="anchor" href="#package-installation"></a>
@@ -114,7 +115,7 @@
 <span>  save <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">test</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Download Time: 0.35 sec elapsed</span></span>
+<span><span class="co">#&gt; Download Time: 0.45 sec elapsed</span></span>
 <span></span>
 <span><span class="va">x</span></span>
 <span><span class="co">#&gt; # A tibble: 3 × 4</span></span>
@@ -131,15 +132,18 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">nppez</span><span class="fu">::</span><span class="fu"><a href="reference/grab.html">grab</a></span><span class="op">(</span></span>
 <span>  obj   <span class="op">=</span> <span class="va">x</span>, </span>
-<span>  files <span class="op">=</span> <span class="st">"NPPES_Deactivated_NPI_Report_040824.zip"</span>,</span>
 <span>  path  <span class="op">=</span> <span class="va">test</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp</span></span>
+<span><span class="co">#&gt; ├── NPPES_Data_Dissemination_040124_040724_Weekly.zip</span></span>
 <span><span class="co">#&gt; ├── NPPES_Data_Dissemination_April_2024.csv</span></span>
+<span><span class="co">#&gt; ├── NPPES_Data_Dissemination_April_2024.zip</span></span>
 <span><span class="co">#&gt; └── NPPES_Deactivated_NPI_Report_040824.zip</span></span>
 <span></span>
 <span><span class="va">y</span></span>
+<span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_040124_040724_Weekly.zip</span></span>
 <span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_April_2024.csv</span></span>
+<span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Data_Dissemination_April_2024.zip</span></span>
 <span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES_Deactivated_NPI_Report_040824.zip</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -147,6 +151,36 @@
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">nppez</span><span class="fu">::</span><span class="fu"><a href="reference/peek.html">peek</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">test</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $NPPES_Data_Dissemination_040124_040724_Weekly.zip</span></span>
+<span><span class="co">#&gt; # A tibble: 10 × 4</span></span>
+<span><span class="co">#&gt;    zipfile                                      filename compressed uncompressed</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                                        &lt;chr&gt;    &lt;fs::byte&gt;  &lt;fs::bytes&gt;</span></span>
+<span><span class="co">#&gt;  1 NPPES_Data_Dissemination_040124_040724_Week… npidata…      2.92M        32.5M</span></span>
+<span><span class="co">#&gt;  2 NPPES_Data_Dissemination_040124_040724_Week… npidata…      1.35K          12K</span></span>
+<span><span class="co">#&gt;  3 NPPES_Data_Dissemination_040124_040724_Week… endpoin…     68.52K       365.5K</span></span>
+<span><span class="co">#&gt;  4 NPPES_Data_Dissemination_040124_040724_Week… endpoin…        154          431</span></span>
+<span><span class="co">#&gt;  5 NPPES_Data_Dissemination_040124_040724_Week… otherna…      35.4K       100.2K</span></span>
+<span><span class="co">#&gt;  6 NPPES_Data_Dissemination_040124_040724_Week… otherna…         53           86</span></span>
+<span><span class="co">#&gt;  7 NPPES_Data_Dissemination_040124_040724_Week… pl_pfil…    201.73K       603.2K</span></span>
+<span><span class="co">#&gt;  8 NPPES_Data_Dissemination_040124_040724_Week… pl_pfil…        160          578</span></span>
+<span><span class="co">#&gt;  9 NPPES_Data_Dissemination_040124_040724_Week… NPPES_D…    459.91K       556.2K</span></span>
+<span><span class="co">#&gt; 10 NPPES_Data_Dissemination_040124_040724_Week… NPPES_D…     368.5K       397.2K</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $NPPES_Data_Dissemination_April_2024.zip</span></span>
+<span><span class="co">#&gt; # A tibble: 10 × 4</span></span>
+<span><span class="co">#&gt;    zipfile                                 filename      compressed uncompressed</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                                   &lt;chr&gt;         &lt;fs::byte&gt;  &lt;fs::bytes&gt;</span></span>
+<span><span class="co">#&gt;  1 NPPES_Data_Dissemination_April_2024.zip endpoint_pfi…     21.27M      105.97M</span></span>
+<span><span class="co">#&gt;  2 NPPES_Data_Dissemination_April_2024.zip endpoint_pfi…        154          431</span></span>
+<span><span class="co">#&gt;  3 NPPES_Data_Dissemination_April_2024.zip npidata_pfil…    884.34M        9.24G</span></span>
+<span><span class="co">#&gt;  4 NPPES_Data_Dissemination_April_2024.zip npidata_pfil…      1.35K       11.98K</span></span>
+<span><span class="co">#&gt;  5 NPPES_Data_Dissemination_April_2024.zip pl_pfile_200…      26.1M       77.26M</span></span>
+<span><span class="co">#&gt;  6 NPPES_Data_Dissemination_April_2024.zip pl_pfile_200…        160          578</span></span>
+<span><span class="co">#&gt;  7 NPPES_Data_Dissemination_April_2024.zip othername_pf…      9.03M       27.47M</span></span>
+<span><span class="co">#&gt;  8 NPPES_Data_Dissemination_April_2024.zip othername_pf…         53           86</span></span>
+<span><span class="co">#&gt;  9 NPPES_Data_Dissemination_April_2024.zip NPPES_Data_D…    459.91K      556.21K</span></span>
+<span><span class="co">#&gt; 10 NPPES_Data_Dissemination_April_2024.zip NPPES_Data_D…     368.5K      397.21K</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NPPES_Deactivated_NPI_Report_040824.zip</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 4</span></span>
 <span><span class="co">#&gt;   zipfile                                 filename       compressed uncompressed</span></span>
@@ -157,22 +191,50 @@
 <h3 id="prune">Prune<a class="anchor" aria-label="anchor" href="#prune"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">nppez</span><span class="fu">::</span><span class="fu"><a href="reference/prune.html">prune</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="va">test</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 4</span></span>
-<span><span class="co">#&gt;   parent_zip                          filename compressed_size uncompressed_size</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                               &lt;chr&gt;              &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 NPPES_Deactivated_NPI_Report_04082… NPPES D…         2073236           4313447</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># nppez::prune(dir = test_zip)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="dispense">Dispense<a class="anchor" aria-label="anchor" href="#dispense"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">nppez</span><span class="fu">::</span><span class="fu"><a href="reference/dispense.html">dispense</a></span><span class="op">(</span><span class="va">test</span>, <span class="st">"NPPES Deactivated NPI Report 20240408.xlsx"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">nppez</span><span class="fu">::</span><span class="fu"><a href="reference/dispense.html">dispense</a></span><span class="op">(</span><span class="va">test</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">test</span><span class="op">)</span></span>
+<span><span class="co">#&gt; C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp</span></span>
+<span><span class="co">#&gt; ├── endpoint_pfile_20050523-20240407.csv</span></span>
+<span><span class="co">#&gt; ├── endpoint_pfile_20050523-20240407_fileheader.csv</span></span>
+<span><span class="co">#&gt; ├── endpoint_pfile_20240401-20240407.csv</span></span>
+<span><span class="co">#&gt; ├── endpoint_pfile_20240401-20240407_fileheader.csv</span></span>
+<span><span class="co">#&gt; ├── npidata_pfile_20050523-20240407.csv</span></span>
+<span><span class="co">#&gt; ├── npidata_pfile_20050523-20240407_fileheader.csv</span></span>
+<span><span class="co">#&gt; ├── npidata_pfile_20240401-20240407.csv</span></span>
+<span><span class="co">#&gt; ├── npidata_pfile_20240401-20240407_fileheader.csv</span></span>
+<span><span class="co">#&gt; ├── NPPES Deactivated NPI Report 20240408.xlsx</span></span>
+<span><span class="co">#&gt; ├── NPPES_Data_Dissemination_040124_040724_Weekly.zip</span></span>
+<span><span class="co">#&gt; ├── NPPES_Data_Dissemination_April_2024.csv</span></span>
+<span><span class="co">#&gt; ├── NPPES_Data_Dissemination_April_2024.zip</span></span>
+<span><span class="co">#&gt; ├── NPPES_Data_Dissemination_CodeValues.pdf</span></span>
+<span><span class="co">#&gt; ├── NPPES_Data_Dissemination_Readme.pdf</span></span>
+<span><span class="co">#&gt; ├── NPPES_Deactivated_NPI_Report_040824.zip</span></span>
+<span><span class="co">#&gt; ├── othername_pfile_20050523-20240407.csv</span></span>
+<span><span class="co">#&gt; ├── othername_pfile_20050523-20240407_fileheader.csv</span></span>
+<span><span class="co">#&gt; ├── othername_pfile_20240401-20240407.csv</span></span>
+<span><span class="co">#&gt; ├── othername_pfile_20240401-20240407_fileheader.csv</span></span>
+<span><span class="co">#&gt; ├── pl_pfile_20050523-20240407.csv</span></span>
+<span><span class="co">#&gt; ├── pl_pfile_20050523-20240407_fileheader.csv</span></span>
+<span><span class="co">#&gt; ├── pl_pfile_20240401-20240407.csv</span></span>
+<span><span class="co">#&gt; └── pl_pfile_20240401-20240407_fileheader.csv</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="load">Load<a class="anchor" aria-label="anchor" href="#load"></a>
 </h2>
+<blockquote>
+<ins>
+<b>Deactivated NPI Report</b>
+</ins>
+<p>: <i>04-08-2024</i></p>
+</blockquote>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span></span>
 <span>  path <span class="op">=</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path</a></span><span class="op">(</span></span>
@@ -181,7 +243,131 @@
 <span>  skip <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>nppes_deactivation_date <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">mdy</a></span><span class="op">(</span><span class="va">nppes_deactivation_date</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: `path` does not exist: 'C:/Users/Andrew/Desktop/Repositories/nppez/inst/tmp/NPPES Deactivated NPI Report 20240408.xlsx'</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 274,370 × 2</span></span>
+<span><span class="co">#&gt;    npi        nppes_deactivation_date</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;      &lt;date&gt;                 </span></span>
+<span><span class="co">#&gt;  1 1982265062 2024-04-07             </span></span>
+<span><span class="co">#&gt;  2 1457064735 2024-04-06             </span></span>
+<span><span class="co">#&gt;  3 1134278393 2024-04-06             </span></span>
+<span><span class="co">#&gt;  4 1104676717 2024-04-05             </span></span>
+<span><span class="co">#&gt;  5 1275385866 2024-04-05             </span></span>
+<span><span class="co">#&gt;  6 1396440467 2024-04-05             </span></span>
+<span><span class="co">#&gt;  7 1376395137 2024-04-05             </span></span>
+<span><span class="co">#&gt;  8 1184356867 2024-04-05             </span></span>
+<span><span class="co">#&gt;  9 1750581948 2024-04-05             </span></span>
+<span><span class="co">#&gt; 10 1629001540 2024-04-05             </span></span>
+<span><span class="co">#&gt; # ℹ 274,360 more rows</span></span></code></pre></div>
+<blockquote>
+<ins>
+<b>Practice Location Reference File</b>
+</ins>
+<p>: <i>05-23-2005 to 04-07-2024</i> All non-primary Practice Locations associated with Type 1 &amp; 2 NPIs</p>
+</blockquote>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
+<span>  <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path</a></span><span class="op">(</span></span>
+<span>    <span class="va">test</span>, </span>
+<span>    <span class="st">"pl_pfile_20050523-20240407.csv"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 845,499 × 10</span></span>
+<span><span class="co">#&gt;         npi provider_secondary_p…¹ provider_secondary_p…² provider_secondary_p…³</span></span>
+<span><span class="co">#&gt;       &lt;dbl&gt; &lt;chr&gt;                  &lt;chr&gt;                  &lt;chr&gt;                 </span></span>
+<span><span class="co">#&gt;  1   1.15e9 7800 Sheridan St       &lt;NA&gt;                   Pembroke Pines        </span></span>
+<span><span class="co">#&gt;  2   1.15e9 500 N Hiatus Rd Ste 2… &lt;NA&gt;                   Pembroke Pines        </span></span>
+<span><span class="co">#&gt;  3   1.70e9 2200 Cedarcrest Dr     Ste A                  Rice Lake             </span></span>
+<span><span class="co">#&gt;  4   1.70e9 757 Lakeland Dr Ste B  &lt;NA&gt;                   Chippewa Falls        </span></span>
+<span><span class="co">#&gt;  5   1.12e9 31 S Stanfield Rd Ste… &lt;NA&gt;                   Troy                  </span></span>
+<span><span class="co">#&gt;  6   1.12e9 3333 W Tech Blvd       &lt;NA&gt;                   Miamisburg            </span></span>
+<span><span class="co">#&gt;  7   1.06e9 560 Riverside Dr Ste … &lt;NA&gt;                   Salisbury             </span></span>
+<span><span class="co">#&gt;  8   1.14e9 226 S Woods Mill Rd    Suite 49W              Chesterfield          </span></span>
+<span><span class="co">#&gt;  9   1.87e9 329 23rd Ave No, Suit… &lt;NA&gt;                   Nashville             </span></span>
+<span><span class="co">#&gt; 10   1.70e9 1960 S 16th St         &lt;NA&gt;                   Wilmington            </span></span>
+<span><span class="co">#&gt; # ℹ 845,489 more rows</span></span>
+<span><span class="co">#&gt; # ℹ abbreviated names:</span></span>
+<span><span class="co">#&gt; #   ¹​provider_secondary_practice_location_address_address_line_1,</span></span>
+<span><span class="co">#&gt; #   ²​provider_secondary_practice_location_address_address_line_2,</span></span>
+<span><span class="co">#&gt; #   ³​provider_secondary_practice_location_address_city_name</span></span>
+<span><span class="co">#&gt; # ℹ 6 more variables:</span></span>
+<span><span class="co">#&gt; #   provider_secondary_practice_location_address_state_name &lt;chr&gt;, …</span></span></code></pre></div>
+<blockquote>
+<ins>
+<b>Other Name Reference File</b>
+</ins>
+<p>: : <i>05-23-2005 to 04-07-2024</i> Additional Other Names associated with Type 2 NPIs</p>
+</blockquote>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
+<span>  <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path</a></span><span class="op">(</span></span>
+<span>    <span class="va">test</span>, </span>
+<span>    <span class="st">"othername_pfile_20050523-20240407.csv"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 639,667 × 3</span></span>
+<span><span class="co">#&gt;           npi provider_other_organization_name         provider_other_organiza…¹</span></span>
+<span><span class="co">#&gt;         &lt;dbl&gt; &lt;chr&gt;                                                        &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 1023011053 Vine Discount Pharmacy &amp; Medical Supply                          3</span></span>
+<span><span class="co">#&gt;  2 1023011178 PROVIDENCE PALLIATIVE CARE NAPA VALLEY                           3</span></span>
+<span><span class="co">#&gt;  3 1023011178 Providence Hospice Napa Valley                                   3</span></span>
+<span><span class="co">#&gt;  4 1023011178 Napa Valley Hospice &amp; Adult Day Services                         4</span></span>
+<span><span class="co">#&gt;  5 1043213093 HOME IV SPECIALISTS INC                                          3</span></span>
+<span><span class="co">#&gt;  6 1053314252 Alliance HomeCare                                                3</span></span>
+<span><span class="co">#&gt;  7 1134122328 Horizon Coral Springs LLC                                        3</span></span>
+<span><span class="co">#&gt;  8 1144223199 Major County EMS                                                 5</span></span>
+<span><span class="co">#&gt;  9 1174526107 Open Imaging Layton                                              3</span></span>
+<span><span class="co">#&gt; 10 1174526107 RAYUS RADIOLOGY                                                  3</span></span>
+<span><span class="co">#&gt; # ℹ 639,657 more rows</span></span>
+<span><span class="co">#&gt; # ℹ abbreviated name: ¹​provider_other_organization_name_type_code</span></span></code></pre></div>
+<blockquote>
+<ins>
+<b>Endpoint Reference File</b>
+</ins>
+<p>: : <i>05-23-2005 to 04-07-2024</i> Endpoints associated with Type 1 &amp; 2 NPIs</p>
+</blockquote>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
+<span>  <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path</a></span><span class="op">(</span></span>
+<span>    <span class="va">test</span>, </span>
+<span>    <span class="st">"endpoint_pfile_20050523-20240407.csv"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 545,028 × 19</span></span>
+<span><span class="co">#&gt;           npi endpoint_type endpoint_type_description endpoint       affiliation</span></span>
+<span><span class="co">#&gt;         &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;                     &lt;chr&gt;          &lt;chr&gt;      </span></span>
+<span><span class="co">#&gt;  1 1154324382 DIRECT        Direct Messaging Address  rclose13800@M… N          </span></span>
+<span><span class="co">#&gt;  2 1154324382 DIRECT        Direct Messaging Address  Richard.Close… N          </span></span>
+<span><span class="co">#&gt;  3 1962405175 DIRECT        Direct Messaging Address  fredericstelz… N          </span></span>
+<span><span class="co">#&gt;  4 1699778894 DIRECT        Direct Messaging Address  aawomolo@dire… N          </span></span>
+<span><span class="co">#&gt;  5 1134122336 DIRECT        Direct Messaging Address  Narasimha.Red… Y          </span></span>
+<span><span class="co">#&gt;  6 1396748596 DIRECT        Direct Messaging Address  CHRISTIANO.CA… N          </span></span>
+<span><span class="co">#&gt;  7 1205839404 FHIR          FHIR URL                  https://epicp… Y          </span></span>
+<span><span class="co">#&gt;  8 1841293040 CONNECT       CONNECT URL               Jennifer.Gile… N          </span></span>
+<span><span class="co">#&gt;  9 1306849591 DIRECT        Direct Messaging Address  svogel89246@d… N          </span></span>
+<span><span class="co">#&gt; 10 1003819038 DIRECT        Direct Messaging Address  lgoldberg1086… N          </span></span>
+<span><span class="co">#&gt; # ℹ 545,018 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 14 more variables: endpoint_description &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   affiliation_legal_business_name &lt;chr&gt;, use_code &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   use_description &lt;chr&gt;, other_use_description &lt;chr&gt;, content_type &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   content_description &lt;chr&gt;, other_content_description &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   affiliation_address_line_one &lt;chr&gt;, affiliation_address_line_two &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   affiliation_address_city &lt;chr&gt;, affiliation_address_state &lt;chr&gt;, …</span></span></code></pre></div>
+<blockquote>
+<ins>
+<b>Complete NPI Data Dissemination File</b>
+</ins>
+<p>: : <i>April 2024</i> Data for all active Type 1 &amp; 2 NPIs</p>
+</blockquote>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
+<span>  <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path</a></span><span class="op">(</span></span>
+<span>    <span class="va">test</span>, </span>
+<span>    <span class="st">"npidata_pfile_20050523-20240407.csv"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
