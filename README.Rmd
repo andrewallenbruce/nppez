@@ -21,10 +21,13 @@ knitr::opts_chunk$set(
 # nppez <a href="https://andrewallenbruce.github.io/nppez/"><img src="man/figures/logo.png" align="right" height="200" alt="nppez website" /></a>
 
 
-> Tidy NPPES NPI Registry Data Files
+> Regularly **Dispense** NPPES Registry Data
 
 <!-- badges: start -->
 <!-- badges: end -->
+
+<br>
+
 
 ## :package: Installation
 
@@ -65,7 +68,6 @@ Download NPPES ZIP files to a local directory
 ```{r grab}
 y <- nppez::grab(
   obj   = x, 
-  files = "NPPES_Deactivated_NPI_Report_040824.zip",
   path  = test
   )
 
@@ -87,17 +89,21 @@ nppez::peek(path = test)
 ### Prune
 
 ```{r prune}
-nppez::prune(dir = test)
+# nppez::prune(dir = test_zip)
 ```
 
 ### Dispense
 
 ```{r dispense}
-nppez::dispense(test, "NPPES Deactivated NPI Report 20240408.xlsx")
+nppez::dispense(test)
+
+fs::dir_tree(test)
 ```
 
 
 ## Load
+
+> <ins><b>Deactivated NPI Report</b></ins>: <i>04-08-2024</i>
 
 ```{r}
 readxl::read_xlsx(
@@ -107,6 +113,59 @@ readxl::read_xlsx(
   skip = 1) |> 
   janitor::clean_names() |>
   dplyr::mutate(nppes_deactivation_date = lubridate::mdy(nppes_deactivation_date))
+```
+
+> <ins><b>Practice Location Reference File</b></ins>: <i>05-23-2005 to 04-07-2024</i>
+> All non-primary Practice Locations associated with Type 1 & 2 NPIs
+
+```{r}
+readr::read_csv(
+  fs::path(
+    test, 
+    "pl_pfile_20050523-20240407.csv"
+    )
+  ) |> 
+  janitor::clean_names()
+```
+
+> <ins><b>Other Name Reference File</b></ins>: : <i>05-23-2005 to 04-07-2024</i>
+> Additional Other Names associated with Type 2 NPIs
+
+```{r}
+readr::read_csv(
+  fs::path(
+    test, 
+    "othername_pfile_20050523-20240407.csv"
+    )
+  ) |> 
+  janitor::clean_names()
+```
+
+> <ins><b>Endpoint Reference File</b></ins>: : <i>05-23-2005 to 04-07-2024</i>
+> Endpoints associated with Type 1 & 2 NPIs
+  
+```{r}
+readr::read_csv(
+  fs::path(
+    test, 
+    "endpoint_pfile_20050523-20240407.csv"
+    )
+  ) |> 
+  janitor::clean_names()
+```
+
+
+> <ins><b>Complete NPI Data Dissemination File</b></ins>: : <i>April 2024</i>
+> Data for all active Type 1 & 2 NPIs
+
+```{r eval=FALSE}
+readr::read_csv(
+  fs::path(
+    test, 
+    "npidata_pfile_20050523-20240407.csv"
+    )
+  ) |> 
+  janitor::clean_names()
 ```
 
 

@@ -207,9 +207,7 @@ prune <- function(dir) {
 
 #' Unzip NPPES ZIPs
 #'
-#' @param zip_from path to directory containing ZIPs
-#'
-#' @param unzip_to path to directory to unzip ZIPs
+#' @param unzip path to directory to unzip ZIPs
 #'
 #' @param files character vector of files inside a zip file to unzip
 #'

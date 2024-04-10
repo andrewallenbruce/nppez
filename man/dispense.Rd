@@ -7,11 +7,9 @@
 dispense(unzip, files = NULL)
 }
 \arguments{
+\item{unzip}{path to directory to unzip ZIPs}
+
 \item{files}{character vector of files inside a zip file to unzip}
-
-\item{zip_from}{path to directory containing ZIPs}
-
-\item{unzip_to}{path to directory to unzip ZIPs}
 }
 \value{
 invisible
