@@ -1,45 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/404.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/index.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/ask.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/dispense.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/grab.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/named_group_split.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/nppez-package.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/peek.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://andrewallenbruce.github.io/nppez/reference/prune.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://andrewallenbruce.github.io/nppez/404.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/LICENSE.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/authors.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/index.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/reference/ask.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/reference/dispense.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/reference/grab.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/reference/index.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/reference/named_group_split.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/reference/nppez-package.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/reference/peek.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/reference/pipe.html</loc></url>
+<url><loc>https://andrewallenbruce.github.io/nppez/reference/prune.html</loc></url>
 </urlset>
+
