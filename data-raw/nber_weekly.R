@@ -1,4 +1,4 @@
-source(here::here("data-raw", "source_setup", "setup.R"))
+source(here::here("data-raw", "pins_functions.R"))
 
 # fs::dir_create("D:/NBER_NPI_Archives/weekly/unzipped")
 dir_base  <- "D:/NBER_NPI_Archives/weekly"
@@ -23,51 +23,53 @@ zip_names <- basename(zip_paths) |>
   purrr::map(yasp::wrap, left = "week_", right = "") |>
   unlist(use.names = FALSE)
 
-purrr::map(
-  zip_paths,
-  ~zip::unzip(zipfile = .x, exdir = dir_unzip)
-)
 
-# Not available on site:
-idx_corrupt <- stringr::str_which(
-  string = zip_paths,
-  pattern = stringr::str_c(
-    "week123019_010520.zip",
-    "week122622_010123.zip",
-    "week122820_010321.zip",
-    "week122721_010222.zip",
-    "week122616_010117.zip",
-    "week123118_010619.zip",
-    "week122815_010316.zip",
-    "week080315_080915.zip",
-    sep = "|",
-    collapse = "|"
-    )
-  )
-
-zip_next <- zip_paths[rlang::seq2_along(max(idx_corrupt) + 1, zip_paths)]
-
-length(zip_paths) - length(zip_next)
-
-purrr::map(
-  zip_next,
-  ~zip::unzip(zipfile = .x, exdir = dir_unzip)
-)
-
-zip_again <- zip_paths[idx_unknown]
-
-purrr::map(
-  zip_again,
-  ~zip::unzip(zipfile = .x, exdir = dir_unzip),
-  .progress = TRUE
-)
-
-unzip_output <- .Last.value
-names(unzip_output)
-which(as.character(zip_paths) == names(unzip_output))
-all(zip_next[zip_next %in% zip_again] == zip_next)
-which(zip_next[zip_next %in% zip_paths] != zip_next)
-length(zip_paths) - length(zip_next)
+#----------- UNZIPPING ####
+# purrr::map(
+#   zip_paths,
+#   ~zip::unzip(zipfile = .x, exdir = dir_unzip)
+# )
+#
+# # Not available on site:
+# idx_corrupt <- stringr::str_which(
+#   string = zip_paths,
+#   pattern = stringr::str_c(
+#     "week123019_010520.zip",
+#     "week122622_010123.zip",
+#     "week122820_010321.zip",
+#     "week122721_010222.zip",
+#     "week122616_010117.zip",
+#     "week123118_010619.zip",
+#     "week122815_010316.zip",
+#     "week080315_080915.zip",
+#     sep = "|",
+#     collapse = "|"
+#     )
+#   )
+#
+# zip_next <- zip_paths[rlang::seq2_along(max(idx_corrupt) + 1, zip_paths)]
+#
+# length(zip_paths) - length(zip_next)
+#
+# purrr::map(
+#   zip_next,
+#   ~zip::unzip(zipfile = .x, exdir = dir_unzip)
+# )
+#
+# zip_again <- zip_paths[idx_unknown]
+#
+# purrr::map(
+#   zip_again,
+#   ~zip::unzip(zipfile = .x, exdir = dir_unzip),
+#   .progress = TRUE
+# )
+#
+# unzip_output <- .Last.value
+# names(unzip_output)
+# which(as.character(zip_paths) == names(unzip_output))
+# all(zip_next[zip_next %in% zip_again] == zip_next)
+# which(zip_next[zip_next %in% zip_paths] != zip_next)
+# length(zip_paths) - length(zip_next)
 
 
 week_list <- basename(zip_paths) |>
@@ -133,6 +135,12 @@ weekly_files <- list(
   unzipped = unzipped_files
 )
 
+pin_update(
+  x = weekly_files,
+  name = "nber_weekly_info",
+  title = "NBER NPI Weekly Data Information"
+  )
+
 npidata <- dplyr::filter(unzipped_files, file == "npidata_pfile")
 
 id <- tools::file_path_sans_ext(basename(npidata$path[1]))
@@ -153,8 +161,7 @@ colnames(npi_base)
 names(npi_base)[length(npi_base)]
 
 npi_tax <- npi_base |>
-  dplyr::select(
-    npi,
+  dplyr::select(npi,
     dplyr::matches(
       "healthcare_provider_taxonomy_code|provider_license_number|provider_license_number_state_code|healthcare_provider_primary_taxonomy_switch|healthcare_provider_taxonomy_group"
       )) |>
@@ -172,10 +179,10 @@ npi_tax <- npi_base |>
     variable = dplyr::case_match(
       variable,
       "healthcare_provider_primary_taxonomy_switch" ~ "primary_taxonomy_switch",
-      "healthcare_provider_taxonomy_code" ~ "taxonomy_code",
-      "healthcare_provider_taxonomy_group" ~ "taxonomy_group",
-      "provider_license_number" ~ "license_number",
-      "provider_license_number_state_code" ~ "license_state",
+      "healthcare_provider_taxonomy_code"           ~ "taxonomy_code",
+      "healthcare_provider_taxonomy_group"          ~ "taxonomy_group",
+      "provider_license_number"                     ~ "license_number",
+      "provider_license_number_state_code"          ~ "license_state",
       .default = variable
     )
   )
@@ -191,7 +198,13 @@ npi_tax |> dplyr::count(variable) |> print(n = 50)
 
 
 
-npi_tax
+npi_tax |>
+  dplyr::filter(npi == "1912620808")
+  dplyr::group_by(npi, group_id) |>
+  tidyr::pivot_wider(
+    names_from = variable,
+    values_from = value
+  )
 
 
 

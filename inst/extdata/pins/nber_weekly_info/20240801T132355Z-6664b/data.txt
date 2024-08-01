@@ -1,0 +1,10 @@
+file: nber_weekly_info.qs
+file_size: 29855
+pin_hash: 6664b4c1e5a1c7b9
+type: qs
+title: NBER NPI Weekly Data Information
+description: ~
+tags: ~
+urls: ~
+created: 20240801T132355Z
+api_version: 1

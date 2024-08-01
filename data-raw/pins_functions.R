@@ -1,4 +1,4 @@
-pin_update <- function(x, name, title, description) {
+pin_update <- function(x, name, title) {
 
   board <- pins::board_folder(
     here::here("inst/extdata/pins")
@@ -9,7 +9,6 @@ pin_update <- function(x, name, title, description) {
       x,
       name        = name,
       title       = title,
-      description = description,
       type        = "qs"
     )
 

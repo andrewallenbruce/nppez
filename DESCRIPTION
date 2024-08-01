@@ -2,8 +2,8 @@ Package: nppez
 Title: Tidy NPPES NPI Registry
 Version: 0.0.1
 Authors@R: 
-    person("Andrew", "Bruce", , "andrew.bruce@northstarrevenueintegrity.com", role = c("aut", "cre", "cph"))
-Maintainer: Andrew Bruce <andrew.bruce@northstarrevenueintegrity.com>
+    person("Andrew", "Bruce", , "andrewallenbruce@gmail.com", role = c("aut", "cre", "cph"))
+Maintainer: Andrew Bruce <andrewallenbruce@gmail.com>
 Description: Provides a tidy interface to the National Plan and Provider
     Enumeration System (NPPES) National Provider Identifier (NPI)
     Registry, a database of all health care providers who have been
