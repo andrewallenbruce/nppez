@@ -148,11 +148,63 @@ npi_base <- tidytable::fread(
 
 colnames(npi_base)
 
-npi_base |>
+# removing NAs - 1,483,875 -> 92,991
+
+names(npi_base)[length(npi_base)]
+
+npi_tax <- npi_base |>
   dplyr::select(
     npi,
     dplyr::matches(
-      "healthcare_provider_taxonomy_code_1|provider_license_number_1|provider_license_number_state_code_1|healthcare_provider_primary_taxonomy_switch_1|healthcare_provider_taxonomy_group_1"
-      )
-    ) |>
-  fuimus::remove_quiet()
+      "healthcare_provider_taxonomy_code|provider_license_number|provider_license_number_state_code|healthcare_provider_primary_taxonomy_switch|healthcare_provider_taxonomy_group"
+      )) |>
+  fuimus::remove_quiet() |>
+  dplyr::mutate(row_id = dplyr::row_number(), .before = 1) |>
+  tidyr::pivot_longer(
+    cols = healthcare_provider_taxonomy_code_1:healthcare_provider_taxonomy_group_15,
+    names_to = c("variable", "group_id"),
+    names_pattern = "(^[a-zA-Z_]+)_(.*)",
+    values_to = "value",
+    names_transform = list(group_id = as.integer)
+  ) |>
+  dplyr::filter(!is.na(value)) |>
+  dplyr::mutate(
+    variable = dplyr::case_match(
+      variable,
+      "healthcare_provider_primary_taxonomy_switch" ~ "primary_taxonomy_switch",
+      "healthcare_provider_taxonomy_code" ~ "taxonomy_code",
+      "healthcare_provider_taxonomy_group" ~ "taxonomy_group",
+      "provider_license_number" ~ "license_number",
+      "provider_license_number_state_code" ~ "license_state",
+      .default = variable
+    )
+  )
+
+npi_tax |> dplyr::count(variable, group_id) |> print(n = 50)
+
+npi_tax |> dplyr::count(variable) |> print(n = 50)
+# 1 healthcare_provider_primary_taxonomy_switch 28135 primary_taxonomy_switch
+# 2 healthcare_provider_taxonomy_code           28135 taxonomy_code
+# 5 healthcare_provider_taxonomy_group           3733 taxonomy_group
+# 4 provider_license_number                     16157 license_number
+# 3 provider_license_number_state_code          16831 license_state
+
+
+
+npi_tax
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
