@@ -135,3 +135,36 @@ download_zips <- function(table, directory) {
   )
   return(c(result, zip_paths))
 }
+
+#' Create Zip File Names for NBER NPI Datasets
+#'
+#' @param x a vector of file paths
+#'
+#' @returns a vector of file names
+#'
+#' @autoglobal
+#'
+#' @keywords internal
+#'
+#' @export
+create_zip_file_names <- function(x){
+
+  stopifnot(
+    !all(
+      fs::is_absolute_path(zip_paths)
+    ) == "All paths must be absolute paths."
+  )
+
+  basename(zip_paths) |>
+    stringr::str_remove_all(".zip|week") |>
+    strex::str_split_by_numbers() |>
+    purrr::list_transpose() |>
+    purrr::discard_at(2) |>
+    purrr::set_names(c("start", "end")) |>
+    purrr::map(lubridate::mdy) |>
+    purrr::list_transpose() |>
+    purrr::map(paste0, collapse = "|") |>
+    purrr::map(yasp::wrap, left = "week:", right = "") |>
+    unlist(use.names = FALSE)
+
+}

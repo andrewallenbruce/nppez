@@ -31,6 +31,7 @@ Imports:
     zip
 Suggests: 
     fuimus,
+    magrittr,
     roxyglobals,
     testthat (>= 3.0.0)
 Remotes: 

@@ -162,6 +162,8 @@ utils::globalVariables(c(
   "is_organization_subpart",
   # <clean_weekly>
   "is_sole_proprietor",
+  # <get_table>
+  "last_modified",
   # <clean_weekly>
   "last_update_date",
   # <clean_weekly>
@@ -729,6 +731,9 @@ utils::globalVariables(c(
   "provider_secondary_practice_location_address_address_line_2",
   # <clean_weekly>
   "replacement_npi",
+  # <get_table>
+  # <table_sum>
+  "size",
   # <create_taxonomy>
   "taxonomy_code",
   # <create_taxonomy>
@@ -738,6 +743,8 @@ utils::globalVariables(c(
   # <peek>
   # <prune>
   "uncompressed_size",
+  # <create_zip_file_names>
+  "zip_paths",
   # <peek>
   "zipfile",
   NULL

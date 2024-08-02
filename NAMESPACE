@@ -2,6 +2,7 @@
 
 export("%>%")
 export(ask)
+export(create_zip_file_names)
 export(dispense)
 export(download_zips)
 export(get_all_tables)
