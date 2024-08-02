@@ -5,11 +5,10 @@ get_pin("nber_weekly_info")
 #----------- NPIData Base ####
 npidata <- dplyr::filter(get_pin("nber_weekly_info")$unzipped, file == "npidata_pfile")
 
-release_id <- tools::file_path_sans_ext(basename(npidata$path[2]))
-release_id
+release_id <- tools::file_path_sans_ext(basename(npidata$path[1]))
 
 npi_raw <- tidytable::fread(
-  npidata$path[2],
+  npidata$path[1],
   colClasses = list(character = 1:330)) |>
   janitor::clean_names() |>
   fuimus::remove_quiet() |>
@@ -41,10 +40,6 @@ npi_base <- npi_raw |>
     credential = clean_credentials(provider_credential_text)
   ) |>
   fuimus::remove_quiet()
-
-npi_base
-
-collapse::fnunique(npi_base$npi)
 
 npi_other <- npi_raw |>
   dplyr::reframe(
@@ -102,15 +97,12 @@ npi_address <- npi_raw |>
   purrr::map_dfr(fuimus::na_if_common) |>
   fuimus::remove_quiet()
 
-#----------- NPIData Taxonomy/License ####
-
 cols_pattern <- fuimus::single_line_string("
 healthcare_provider_taxonomy_code
 |provider_license_number
 |provider_license_number_state_code
 |healthcare_provider_primary_taxonomy_switch
-|healthcare_provider_taxonomy_group"
-                                           )
+|healthcare_provider_taxonomy_group")
 
 npi_tax_lis <- npi_raw |>
   dplyr::select(npi, dplyr::matches(rlang::as_string(cols_pattern))) |>
@@ -144,8 +136,6 @@ npi_tax_lis <- npi_raw |>
     license_state) |>
   dplyr::arrange(npi, taxonomy_primary)
 
-
-#----------- NPIData Other Identifiers ####
 npi_identifiers <- npi_raw |>
   dplyr::select(npi, dplyr::starts_with("other_provider_identifier_")) |>
   fuimus::remove_quiet() |>
@@ -178,7 +168,7 @@ npi_identifiers <- npi_raw |>
 
 #----------- Weekly Release pin ####
 npi_week <- list(
-  release = create_zip_file_names(release_id),
+  release = create_zip_file_names(release_id, format = "%Y%m%d"),
   basic = npi_base,
   address = npi_address,
   other = npi_other,
@@ -189,6 +179,6 @@ npi_week <- list(
 
 pin_update(
   x = npi_week,
-  name = "2024-01-22_2024-01-28",
-  title = "NBER NPI Weekly Release 2024-01-22"
+  name = "wk20240101",
+  title = "NBER NPI Weekly Release 2024-01-01"
 )

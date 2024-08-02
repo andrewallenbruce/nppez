@@ -1,4 +1,4 @@
-file: 2024-01-22_2024-01-28.qs
+file: wk20240122.qs
 file_size: 2247579
 pin_hash: fa95b74bd411aa78
 type: qs
@@ -6,5 +6,5 @@ title: NBER NPI Weekly Release 2024-01-22
 description: ~
 tags: ~
 urls: ~
-created: 20240802T063427Z
+created: 20240802T234314Z
 api_version: 1

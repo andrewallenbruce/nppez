@@ -228,7 +228,7 @@ clean_credentials <- function(x) {
 #' @autoglobal
 #'
 #' @export
-wrap <- function(x, left, right = left) {
+wrap <- function(x, left, right) {
 
   paste0(left, x, right)
 

@@ -28,7 +28,7 @@ Imports:
     magrittr,
     pins,
     purrr,
-    qs,
+    tibble,
     readr,
     readxl,
     rlang,
@@ -39,6 +39,7 @@ Imports:
     tidyr,
     zip
 Suggests: 
+    qs,
     fuimus,
     roxyglobals,
     testthat (>= 3.0.0)

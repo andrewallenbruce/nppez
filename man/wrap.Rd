@@ -4,7 +4,7 @@
 \alias{wrap}
 \title{Wrap strings}
 \usage{
-wrap(x, left, right = left)
+wrap(x, left, right)
 }
 \arguments{
 \item{x}{a vector of provider credentials}
