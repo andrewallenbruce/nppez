@@ -136,46 +136,100 @@ download_zips <- function(table, directory) {
   return(c(result, zip_paths))
 }
 
-#' Create Zip File Names for NBER NPI Datasets
+#' Create Standardized File Names
 #'
-#' @param x a vector of file paths
+#' @param file_names a vector of file names
 #'
-#' @returns a vector of file names
+#' @param remove regex pattern to remove from file names
+#'
+#' @param format date format
+#'
+#' @param collapse delimiter
+#'
+#' @param left string to prepend to file names
+#'
+#' @param right string to append to file names
+#'
+#' @returns a vector of transformed file names
+#'
+#' @examples
+#' c("week123019_010520.zip",
+#    "week122622_010123.zip",
+#    "week122820_010321.zip",
+#    "week122721_010222.zip",
+#    "week122616_010117.zip",
+#    "week123118_010619.zip",
+#    "week122815_010316.zip",
+#    "week080315_080915.zip") |>
+#    create_zip_file_names()
 #'
 #' @autoglobal
 #'
-#' @keywords internal
-#'
 #' @export
-create_zip_file_names <- function(x){
+create_zip_file_names <- function(file_names,
+                                  remove = ".zip|week|npidata_pfile_",
+                                  format = "%m%d%y",
+                                  collapse = "|",
+                                  left = "week:",
+                                  right = ""
+                                  ) {
 
-  basename(x) |>
-    stringr::str_remove_all(".zip|week|npidata_pfile_") |>
+  x <- basename(file_names) |>
+    stringr::str_remove_all(remove) |>
     strex::str_split_by_numbers() |>
     purrr::list_transpose() |>
     purrr::discard_at(2) |>
-    purrr::set_names(c("start", "end")) |>
-    purrr::map(anytime::anydate) |>
+    purrr::set_names(c("start", "end"))
+
+  asdate <- \(x) as.Date(x, format = format)
+
+  x |>
+    purrr::map(asdate) |>
     purrr::list_transpose() |>
-    purrr::map(paste0, collapse = "|") |>
-    purrr::map(yasp::wrap, left = "week:", right = "") |>
+    purrr::map(paste0, collapse = collapse) |>
+    purrr::map(wrap, left = left, right = right) |>
     unlist(use.names = FALSE)
 
 }
 
 #' Clean credentials
 #'
-#' Replaces periods with empty strings
+#' Removes periods ("`.`") in strings
 #'
-#' @param x a vector of provider credentials
+#' @param x a string vector of provider credentials
 #'
 #' @returns vector
 #'
-#' @autoglobal
+#' @examples
+#' clean_credentials("M.D.")
 #'
-#' @keywords internal
+#' @autoglobal
 #'
 #' @export
 clean_credentials <- function(x) {
+
   gsub("\\.", "", x)
+
+}
+
+#' Wrap strings
+#'
+#' @param x a vector of provider credentials
+#'
+#' @param left a string
+#'
+#' @param right a string
+#'
+#' @returns vector
+#'
+#' @examples
+#' wrap(x = "M.D.", left = "(", right = ")")
+#'
+#' @autoglobal
+#'
+#' @export
+wrap <- function(x, left, right = left) {
+
+  paste0(left, x, right)
+
 }

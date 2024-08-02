@@ -17,17 +17,25 @@ BugReports: https://github.com/andrewallenbruce/nppez/issues
 Depends: 
     R (>= 4.1.0)
 Imports: 
+    anytime,
+    clock,
     curl,
+    data.table,
     dplyr,
     fs,
+    glue,
     janitor,
+    magrittr,
+    pins,
     purrr,
+    qs,
+    readr,
+    readxl,
     rlang,
     rvest,
     strex,
     stringr,
     tictoc,
-    magrittr,
     tidyr,
     zip
 Suggests: 

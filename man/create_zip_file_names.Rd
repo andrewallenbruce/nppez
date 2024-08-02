@@ -2,17 +2,37 @@
 % Please edit documentation in R/nber.R
 \name{create_zip_file_names}
 \alias{create_zip_file_names}
-\title{Create Zip File Names for NBER NPI Datasets}
+\title{Create Standardized File Names}
 \usage{
-create_zip_file_names(x)
+create_zip_file_names(
+  file_names,
+  remove = ".zip|week|npidata_pfile_",
+  format = "\%m\%d\%y",
+  collapse = "|",
+  left = "week:",
+  right = ""
+)
 }
 \arguments{
-\item{x}{a vector of file paths}
+\item{file_names}{a vector of file names}
+
+\item{remove}{regex pattern to remove from file names}
+
+\item{format}{date format}
+
+\item{collapse}{delimiter}
+
+\item{left}{string to prepend to file names}
+
+\item{right}{string to append to file names}
 }
 \value{
-a vector of file names
+a vector of transformed file names
 }
 \description{
-Create Zip File Names for NBER NPI Datasets
+Create Standardized File Names
 }
-\keyword{internal}
+\examples{
+c("week123019_010520.zip",
+
+}

@@ -7,12 +7,15 @@
 clean_credentials(x)
 }
 \arguments{
-\item{x}{a vector of provider credentials}
+\item{x}{a string vector of provider credentials}
 }
 \value{
 vector
 }
 \description{
-Replaces periods with empty strings
+Removes periods ("\code{.}") in strings
 }
-\keyword{internal}
+\examples{
+clean_credentials("M.D.")
+
+}

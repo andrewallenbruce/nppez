@@ -47,7 +47,7 @@ clnm <- c(
 
 npi_2024_01_01 |>
   dplyr::mutate(
-    credential = provider:::clean_credentials(credential)) |>
+    credential = clean_credentials(credential)) |>
   hacksaw::count_split(
     entity,
     enum_date,
