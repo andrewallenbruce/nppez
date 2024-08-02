@@ -743,8 +743,6 @@ utils::globalVariables(c(
   # <peek>
   # <prune>
   "uncompressed_size",
-  # <create_zip_file_names>
-  "zip_paths",
   # <peek>
   "zipfile",
   NULL

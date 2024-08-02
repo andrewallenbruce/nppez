@@ -5,11 +5,11 @@ get_pin("nber_weekly_info")
 #----------- NPIData Base ####
 npidata <- dplyr::filter(get_pin("nber_weekly_info")$unzipped, file == "npidata_pfile")
 
-release_id <- tools::file_path_sans_ext(basename(npidata$path[1]))
+release_id <- tools::file_path_sans_ext(basename(npidata$path[2]))
 release_id
 
 npi_raw <- tidytable::fread(
-  npidata$path[1],
+  npidata$path[2],
   colClasses = list(character = 1:330)) |>
   janitor::clean_names() |>
   fuimus::remove_quiet() |>
@@ -38,7 +38,7 @@ npi_base <- npi_raw |>
     middle = provider_middle_name,
     last = provider_last_name_legal_name,
     suffix = provider_name_suffix_text,
-    credential = provider_credential_text
+    credential = clean_credentials(provider_credential_text)
   ) |>
   fuimus::remove_quiet()
 
@@ -57,18 +57,12 @@ npi_other <- npi_raw |>
     other_last = provider_other_last_name,
     other_last_type = provider_other_last_name_type_code,
     other_suffix = provider_other_name_suffix_text,
-    other_credential = provider_other_credential_text
-  ) |>
-  dplyr::rowwise() |>
-  dplyr::mutate(na_count = list(sum(is.na(dplyr::c_across(other_org_name:other_credential))))) |>
-  tidyr::unnest(na_count) |>
-  dplyr::filter(na_count < 9) |>
-  dplyr::select(-na_count) |>
-  fuimus::remove_quiet()
+    other_credential = clean_credentials(provider_other_credential_text)
+  )
 
-npi_other
+npi_other <- vctrs::vec_slice(npi_other, which(cheapr::row_na_counts(npi_other) < 9))
 
-npi_authorized_official <- npi_raw |>
+npi_auth_ofc <- npi_raw |>
   dplyr::reframe(
     npi,
     ao_prefix = authorized_official_name_prefix_text,
@@ -76,18 +70,12 @@ npi_authorized_official <- npi_raw |>
     ao_middle = authorized_official_middle_name,
     ao_last = authorized_official_last_name,
     ao_suffix = authorized_official_name_suffix_text,
-    ao_credential = authorized_official_credential_text,
+    ao_credential = clean_credentials(authorized_official_credential_text),
     ao_title = authorized_official_title_or_position,
     ao_phone = authorized_official_telephone_number
-  ) |>
-  dplyr::rowwise() |>
-  dplyr::mutate(na_count = list(sum(is.na(dplyr::c_across(ao_prefix:ao_phone))))) |>
-  tidyr::unnest(na_count) |>
-  dplyr::filter(na_count < 8) |>
-  dplyr::select(-na_count) |>
-  fuimus::remove_quiet()
+  )
 
-npi_authorized_official
+npi_auth_ofc <- vctrs::vec_slice(npi_auth_ofc, which(cheapr::row_na_counts(npi_auth_ofc) < 8))
 
 npi_address <- npi_raw |>
   dplyr::reframe(
@@ -114,9 +102,8 @@ npi_address <- npi_raw |>
   purrr::map_dfr(fuimus::na_if_common) |>
   fuimus::remove_quiet()
 
-npi_address
-
 #----------- NPIData Taxonomy/License ####
+
 cols_pattern <- fuimus::single_line_string("
 healthcare_provider_taxonomy_code
 |provider_license_number
@@ -125,7 +112,7 @@ healthcare_provider_taxonomy_code
 |healthcare_provider_taxonomy_group"
                                            )
 
-npi_taxonomy_license <- npi_raw |>
+npi_tax_lis <- npi_raw |>
   dplyr::select(npi, dplyr::matches(rlang::as_string(cols_pattern))) |>
   fuimus::remove_quiet() |>
   dplyr::mutate(row_id = dplyr::row_number(), .before = 1) |>
@@ -157,8 +144,6 @@ npi_taxonomy_license <- npi_raw |>
     license_state) |>
   dplyr::arrange(npi, taxonomy_primary)
 
-npi_taxonomy_license |>
-  tidyr::nest(data = -npi)
 
 #----------- NPIData Other Identifiers ####
 npi_identifiers <- npi_raw |>
@@ -191,21 +176,19 @@ npi_identifiers <- npi_raw |>
     other_id_issuer
   )
 
-npi_identifiers
-
 #----------- Weekly Release pin ####
 npi_week <- list(
-  release = release_id,
-  base = npi_base,
-  addr = npi_address,
+  release = create_zip_file_names(release_id),
+  basic = npi_base,
+  address = npi_address,
   other = npi_other,
-  ao = npi_authorized_official,
-  tax = npi_taxonomy_license,
-  ids = npi_identifiers
+  authorized = npi_auth_ofc,
+  taxonomy = npi_tax_lis,
+  identifier = npi_identifiers
 )
 
 pin_update(
   x = npi_week,
-  name = "npi_2024_01_01__2024_01_07",
-  title = "NBER NPI Weekly Release 01-01-24"
+  name = "2024-01-22_2024-01-28",
+  title = "NBER NPI Weekly Release 2024-01-22"
 )

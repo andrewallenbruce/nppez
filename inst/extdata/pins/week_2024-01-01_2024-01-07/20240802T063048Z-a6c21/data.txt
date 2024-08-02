@@ -1,0 +1,10 @@
+file: week_2024-01-01_2024-01-07.qs
+file_size: 1754940
+pin_hash: a6c21a95965b6788
+type: qs
+title: NBER NPI Weekly Release 2024-01-01
+description: ~
+tags: ~
+urls: ~
+created: 20240802T063048Z
+api_version: 1
