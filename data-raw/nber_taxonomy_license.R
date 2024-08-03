@@ -166,6 +166,20 @@ npi_identifiers <- npi_raw |>
     other_id_issuer
   )
 
+create_zip_file_names(release_id, format = "%Y%m%d")
+
+aweek::date2week("2024-01-01")
+
+npidata |>
+  dplyr::mutate(
+    year_week = grates::as_yearweek(week_start), .before = 2,
+    )
+# aweek = aweek::date2week(week_start, factor = TRUE, floor_day = TRUE),
+
+aweek::date2week(npidata$week_start[1])
+grates::as_yearweek(npidata$week_start[1]
+  # as.Date(npidata$week_start[1])
+  )
 #----------- Weekly Release pin ####
 npi_week <- list(
   release = create_zip_file_names(release_id, format = "%Y%m%d"),
