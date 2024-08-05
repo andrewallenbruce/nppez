@@ -154,14 +154,14 @@ download_zips <- function(table, directory) {
 #'
 #' @examples
 #' c("week123019_010520.zip",
-#    "week122622_010123.zip",
-#    "week122820_010321.zip",
-#    "week122721_010222.zip",
-#    "week122616_010117.zip",
-#    "week123118_010619.zip",
-#    "week122815_010316.zip",
-#    "week080315_080915.zip") |>
-#    create_zip_file_names()
+#'    "week122622_010123.zip",
+#'    "week122820_010321.zip",
+#'    "week122721_010222.zip",
+#'    "week122616_010117.zip",
+#'    "week123118_010619.zip",
+#'    "week122815_010316.zip",
+#'    "week080315_080915.zip") |>
+#'    create_zip_file_names()
 #'
 #' @autoglobal
 #'
