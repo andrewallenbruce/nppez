@@ -1,0 +1,10 @@
+file: wk_20240205.qs
+file_size: 2243136
+pin_hash: bd4493901a56fd6e
+type: qs
+title: NBER NPI Weekly Release 2024-02-05
+description: ~
+tags: ~
+urls: ~
+created: 20241118T090419Z
+api_version: 1

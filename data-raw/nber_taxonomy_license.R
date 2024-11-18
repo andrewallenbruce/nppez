@@ -5,10 +5,12 @@ get_pin("nber_weekly_info")
 #----------- NPIData Base ####
 npidata <- dplyr::filter(get_pin("nber_weekly_info")$unzipped, file == "npidata_pfile")
 
-release_id <- tools::file_path_sans_ext(basename(npidata$path[1]))
+file_idx <- 3
+
+release_id <- tools::file_path_sans_ext(basename(npidata$path[file_idx]))
 
 npi_raw <- tidytable::fread(
-  npidata$path[1],
+  npidata$path[file_idx],
   colClasses = list(character = 1:330)) |>
   janitor::clean_names() |>
   fuimus::remove_quiet() |>
@@ -166,20 +168,19 @@ npi_identifiers <- npi_raw |>
     other_id_issuer
   )
 
-create_zip_file_names(release_id, format = "%Y%m%d")
-
-aweek::date2week("2024-01-01")
-
-npidata |>
-  dplyr::mutate(
-    year_week = grates::as_yearweek(week_start), .before = 2,
-    )
+# create_zip_file_names(release_id, format = "%Y%m%d")
+# aweek::date2week("2024-01-01")
 # aweek = aweek::date2week(week_start, factor = TRUE, floor_day = TRUE),
+# aweek::date2week(npidata$week_start[1])
+# npidata |> dplyr::mutate(year_week = grates::as_yearweek(week_start), .before = 2)
+#
+# grates::as_yearweek(npidata$week_start[1]
+#   # as.Date(npidata$week_start[1])
+#   )
 
-aweek::date2week(npidata$week_start[1])
-grates::as_yearweek(npidata$week_start[1]
-  # as.Date(npidata$week_start[1])
-  )
+
+create_pin_name <- \(x) stringr::str_replace_all(x, "npidata_pfile", "wk") |> strex::str_before_first("-")
+
 #----------- Weekly Release pin ####
 npi_week <- list(
   release = create_zip_file_names(release_id, format = "%Y%m%d"),
@@ -193,6 +194,6 @@ npi_week <- list(
 
 pin_update(
   x = npi_week,
-  name = "wk20240101",
-  title = "NBER NPI Weekly Release 2024-01-01"
+  name = create_pin_name(release_id),
+  title = "NBER NPI Weekly Release 2024-02-05"
 )
